@@ -3,44 +3,26 @@ package com.gmail.luizjmfilho.buraco
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.gmail.luizjmfilho.buraco.ui.theme.BuracoTheme
+import com.gmail.luizjmfilho.buraco.ui.MatchesListScreenPrimaria
+import com.gmail.luizjmfilho.buraco.ui.NewMatchScreenPrimaria
+import com.gmail.luizjmfilho.buraco.ui.PlayersListScreenPrimaria
+import com.gmail.luizjmfilho.buraco.ui.theme.PlacarBuracoTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+enum class ScreenNames {
+    MatchesList,
+    NewMatch,
+    PlayersList,
+}
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BuracoTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+            PlacarBuracoTheme {
+                PlacarBuracoNavHost()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BuracoTheme {
-        Greeting("Android")
     }
 }
