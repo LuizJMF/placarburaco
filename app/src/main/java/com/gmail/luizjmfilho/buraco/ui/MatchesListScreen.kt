@@ -1,7 +1,12 @@
 package com.gmail.luizjmfilho.buraco.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,31 +19,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissState
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -51,6 +69,7 @@ import com.gmail.luizjmfilho.buraco.R
 import com.gmail.luizjmfilho.buraco.model.DoubleMatchPlayers
 import com.gmail.luizjmfilho.buraco.model.SingleMatchPlayers
 import com.gmail.luizjmfilho.buraco.ui.theme.PlacarBuracoTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun MatchesListScreenPrimaria(
@@ -64,6 +83,8 @@ fun MatchesListScreenPrimaria(
     MatchesListScreenSecundaria(
         matchesListUiState = matchesListUiState,
         onCreateNewMatch = onCreateNewMatch,
+        onDeleteDoubleMatch = matchesListViewModel::onDeleteDoubleMatch,
+        onDeleteSingleMatch = matchesListViewModel::onDeleteSingleMatch,
         modifier = modifier,
     )
 }
@@ -72,8 +93,13 @@ fun MatchesListScreenPrimaria(
 fun MatchesListScreenSecundaria(
     matchesListUiState: MatchesListUiState,
     onCreateNewMatch: () -> Unit,
+    onDeleteDoubleMatch: (DoubleMatchPlayers) -> Unit,
+    onDeleteSingleMatch: (SingleMatchPlayers) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isDoubleMatchesShown by rememberSaveable { mutableStateOf(true) }
+    var isSingleMatchesShown by rememberSaveable { mutableStateOf(true) }
+
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -95,35 +121,74 @@ fun MatchesListScreenSecundaria(
                 .fillMaxSize()
                 .padding(scaffoldPaddings),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                DoubleOrSingleTitleCard(
-                    matchType = MatchType.Doubles
-                )
-                for (match in matchesListUiState.doubleMatchList) {
-                    DoublesCard(
-                        doubleMatchPlayers = match,
-                        modifier = Modifier
-                            .padding(start = 25.dp)
+            LazyColumn {
+                item {
+                    DoubleOrSingleTitleCard(
+                        matchType = MatchType.Doubles,
+                        expanded = isDoubleMatchesShown,
+                        onShowMatchesClick = {
+                            isDoubleMatchesShown = !isDoubleMatchesShown
+                        }
                     )
-                    if (matchesListUiState.doubleMatchList.indexOf(match) < (matchesListUiState.doubleMatchList.size - 1)) Divider()
                 }
-                DoubleOrSingleTitleCard(
-                    matchType = MatchType.Singles
-                )
-                for (match in matchesListUiState.singleMatchList) {
-                    SinglesCard(
-                        singleMatchPlayers = match,
-                        modifier = Modifier
-                            .padding(start = 25.dp)
+                items(
+                    items = matchesListUiState.doubleMatchList,
+                    key = { it.id }
+                ) { match ->
+                    AnimatedVisibility(
+                        visible = isDoubleMatchesShown
+                    ) {
+                        Column {
+                            SwipeToDeleteContainer(
+                                item = match,
+                                onDelete = {
+                                    onDeleteDoubleMatch(it)
+                                }
+                            ) {
+                                DoublesCard(
+                                    doubleMatchPlayers = match,
+                                    modifier = Modifier
+                                        .padding(start = 25.dp)
+                                )
+                            }
+                            if (matchesListUiState.doubleMatchList.indexOf(match) < (matchesListUiState.doubleMatchList.size - 1)) Divider()
+                        }
+                    }
+                }
+                item {
+                    DoubleOrSingleTitleCard(
+                        matchType = MatchType.Singles,
+                        expanded = isSingleMatchesShown,
+                        onShowMatchesClick = {
+                            isSingleMatchesShown = !isSingleMatchesShown
+                        }
                     )
-                    Divider()
+                }
+                items(
+                    items = matchesListUiState.singleMatchList,
+                    key = { it.id + 5000} // esse 5000 é só pra que os items individuais gerem keys diferentes dos items de dupla
+                ) { match ->
+                    AnimatedVisibility(
+                        visible = isSingleMatchesShown
+                    ) {
+                        Column {
+                            SwipeToDeleteContainer(
+                                item = match,
+                                onDelete = {
+                                    onDeleteSingleMatch(it)
+                                }
+                            ) {
+                                SinglesCard(
+                                    singleMatchPlayers = match,
+                                    modifier = Modifier
+                                        .padding(start = 25.dp)
+                                )
+                            }
+                            Divider()
+                        }
+                    }
                 }
             }
-
         }
     }
 }
@@ -240,6 +305,8 @@ fun DoublesCard(
 @Composable
 fun DoubleOrSingleTitleCard(
     matchType: MatchType,
+    onShowMatchesClick: () -> Unit,
+    expanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val textAndIconsColor = Color.White
@@ -273,12 +340,17 @@ fun DoubleOrSingleTitleCard(
             )
             Spacer(modifier = Modifier.weight(1f))
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = onShowMatchesClick
             ) {
+                val degree by animateFloatAsState(
+                    targetValue = if (expanded) 0f else 180f,
+                )
                 Icon(
-                    imageVector = Icons.Filled.ExpandMore,
+                    imageVector = Icons.Filled.ExpandLess,
                     contentDescription = null,
                     tint = textAndIconsColor,
+                    modifier = Modifier
+                        .rotate(degree)
                 )
             }
         }
@@ -322,6 +394,98 @@ fun DefaultTopBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit,
+) {
+    var isRemoved by rememberSaveable { mutableStateOf(false) }
+    val state = rememberDismissState(
+        confirmValueChange = { value ->
+            if(value == DismissValue.DismissedToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+    
+    LaunchedEffect(key1 = isRemoved) {
+        if(isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismiss(
+            state = state,
+            background = {
+                DeleteBackground(swipeDismissState = state)
+            },
+            dismissContent = { content(item) },
+            directions = setOf(DismissDirection.EndToStart)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteBackground(
+    swipeDismissState: DismissState,
+) {
+    val color = if(swipeDismissState.dismissDirection == DismissDirection.EndToStart) {
+        Color.Red
+    } else Color.Transparent
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = Color.White)
+    }
+}
+
+@Composable
+fun DeleteMatchAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmButton: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmButton,
+            ) {
+                Text(text = stringResource(R.string.confirm))
+            }
+        },
+        text = { Text(text = stringResource(R.string.delete_match_warning)) },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+        },
+        modifier = modifier,
+    )
+}
+
 @Preview
 @Composable
 fun MatchesListScreenPreview() {
@@ -348,7 +512,9 @@ fun MatchesListScreenPreview() {
                     ),
                 ),
             ),
-            onCreateNewMatch = {}
+            onCreateNewMatch = {},
+            onDeleteDoubleMatch = {},
+            onDeleteSingleMatch = {}
         )
     }
 }

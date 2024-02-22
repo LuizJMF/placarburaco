@@ -3,6 +3,8 @@ package com.gmail.luizjmfilho.buraco.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gmail.luizjmfilho.buraco.data.MatchesListRepository
+import com.gmail.luizjmfilho.buraco.model.DoubleMatchPlayers
+import com.gmail.luizjmfilho.buraco.model.SingleMatchPlayers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +26,28 @@ class MatchesListViewModel @Inject constructor(
                 currenteState.copy(
                     doubleMatchList = matchesListRepository.viewAllDoublesMatches(),
                     singleMatchList = matchesListRepository.viewAllSinglesMatches(),
+                )
+            }
+        }
+    }
+
+    fun onDeleteDoubleMatch(match: DoubleMatchPlayers) {
+        viewModelScope.launch {
+            _uiState.update {  currentState ->
+                matchesListRepository.deleteDoubleMatch(match)
+                currentState.copy(
+                    doubleMatchList = matchesListRepository.viewAllDoublesMatches()
+                )
+            }
+        }
+    }
+
+    fun onDeleteSingleMatch(match: SingleMatchPlayers) {
+        viewModelScope.launch {
+            _uiState.update {  currentState ->
+                matchesListRepository.deleteSingleMatch(match)
+                currentState.copy(
+                    singleMatchList = matchesListRepository.viewAllSinglesMatches()
                 )
             }
         }

@@ -18,4 +18,7 @@ interface SingleMatchPlayersDao {
 
     @Query("SELECT * FROM SingleMatchPlayers")
     suspend fun viewAllSingleMatches() : List<SingleMatchPlayers>
+
+    @Query("DELETE FROM SingleMatchPlayers WHERE (player1 = :p1 AND player2 = :p2 AND player3 = :p3)")
+    suspend fun deleteSingleMatch(p1: String, p2: String, p3: String)
 }

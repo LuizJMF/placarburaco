@@ -35,4 +35,7 @@ interface DoubleMatchPlayersDao {
     @Query("SELECT * FROM DoubleMatchPlayers")
     suspend fun viewAllDoubleMatches() : List<DoubleMatchPlayers>
 
+    @Query("DELETE FROM DoubleMatchPlayers WHERE (player1 = :p1 AND player2 = :p2 AND player3 = :p3 AND player4 = :p4)")
+    suspend fun deleteDoubleMatch(p1: String, p2: String, p3: String, p4: String)
+
 }

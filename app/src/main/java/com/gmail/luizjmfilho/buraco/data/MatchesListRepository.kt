@@ -17,4 +17,12 @@ class MatchesListRepository @Inject constructor(
         return doubleMatchPlayersDao.viewAllDoubleMatches()
     }
 
+    suspend fun deleteDoubleMatch(match: DoubleMatchPlayers) {
+        doubleMatchPlayersDao.deleteDoubleMatch(match.player1, match.player2, match.player3, match.player4)
+    }
+
+    suspend fun deleteSingleMatch(match: SingleMatchPlayers) {
+        singleMatchPlayersDao.deleteSingleMatch(match.player1, match.player2, match.player3)
+    }
+
 }

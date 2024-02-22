@@ -10,4 +10,6 @@
     <string name="choose">Escolher</string>
     <string name="create_match">Criar partida</string>
     <string name="match_already_exists">Já existe uma partida criada com esses jogadores</string>
+    <string name="confirm">Confirmar</string>
+    <string name="delete_match_warning">Tem certeza que você quer cancelar essa partida? Todos os dados referentes a ela serão perdidos.</string>
 </resources>
