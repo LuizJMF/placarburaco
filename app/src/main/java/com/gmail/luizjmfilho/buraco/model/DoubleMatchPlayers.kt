@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class DoubleMatchPlayers(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val player1: String,
-    val player2: String,
-    val player3: String,
-    val player4: String,
+    @PrimaryKey(autoGenerate = true) val doubleGroupId: Int = 0,
+    val player1id: Int,
+    val player2id: Int,
+    val player3id: Int,
+    val player4id: Int,
 )

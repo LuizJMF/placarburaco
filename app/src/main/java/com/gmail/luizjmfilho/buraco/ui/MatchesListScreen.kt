@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
@@ -46,6 +45,7 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gmail.luizjmfilho.buraco.R
 import com.gmail.luizjmfilho.buraco.model.DoubleMatchPlayers
+import com.gmail.luizjmfilho.buraco.model.Player
 import com.gmail.luizjmfilho.buraco.model.SingleMatchPlayers
 import com.gmail.luizjmfilho.buraco.ui.theme.PlacarBuracoTheme
 import kotlinx.coroutines.delay
@@ -75,6 +77,8 @@ import kotlinx.coroutines.delay
 fun MatchesListScreenPrimaria(
     onCreateNewMatch: () -> Unit,
     modifier: Modifier = Modifier,
+    onSingleGroupClick: (MatchType, Int) -> Unit,
+    onDoubleGroupClick: (MatchType, Int) -> Unit,
     matchesListViewModel: MatchesListViewModel = hiltViewModel(),
 ) {
 
@@ -85,6 +89,8 @@ fun MatchesListScreenPrimaria(
         onCreateNewMatch = onCreateNewMatch,
         onDeleteDoubleMatch = matchesListViewModel::onDeleteDoubleMatch,
         onDeleteSingleMatch = matchesListViewModel::onDeleteSingleMatch,
+        onSingleGroupClick = onSingleGroupClick,
+        onDoubleGroupClick = onDoubleGroupClick,
         modifier = modifier,
     )
 }
@@ -95,6 +101,8 @@ fun MatchesListScreenSecundaria(
     onCreateNewMatch: () -> Unit,
     onDeleteDoubleMatch: (DoubleMatchPlayers) -> Unit,
     onDeleteSingleMatch: (SingleMatchPlayers) -> Unit,
+    onSingleGroupClick: (MatchType, Int) -> Unit,
+    onDoubleGroupClick: (MatchType, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isDoubleMatchesShown by rememberSaveable { mutableStateOf(true) }
@@ -133,7 +141,7 @@ fun MatchesListScreenSecundaria(
                 }
                 items(
                     items = matchesListUiState.doubleMatchList,
-                    key = { it.id }
+                    key = { it.doubleGroupId }
                 ) { match ->
                     AnimatedVisibility(
                         visible = isDoubleMatchesShown
@@ -146,9 +154,15 @@ fun MatchesListScreenSecundaria(
                                 }
                             ) {
                                 DoublesCard(
-                                    doubleMatchPlayers = match,
+                                    p1Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player1id }].playerName,
+                                    p2Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player2id }].playerName,
+                                    p3Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player3id }].playerName,
+                                    p4Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player4id }].playerName,
                                     modifier = Modifier
-                                        .padding(start = 25.dp)
+                                        .padding(start = 25.dp),
+                                    onDoubleGroupClick = {
+                                        onDoubleGroupClick(MatchType.Doubles, match.doubleGroupId)
+                                    }
                                 )
                             }
                             if (matchesListUiState.doubleMatchList.indexOf(match) < (matchesListUiState.doubleMatchList.size - 1)) Divider()
@@ -166,7 +180,7 @@ fun MatchesListScreenSecundaria(
                 }
                 items(
                     items = matchesListUiState.singleMatchList,
-                    key = { it.id + 5000} // esse 5000 é só pra que os items individuais gerem keys diferentes dos items de dupla
+                    key = { it.singleGroupId + 5000} // esse 5000 é só pra que os items individuais gerem keys diferentes dos items de dupla
                 ) { match ->
                     AnimatedVisibility(
                         visible = isSingleMatchesShown
@@ -179,9 +193,14 @@ fun MatchesListScreenSecundaria(
                                 }
                             ) {
                                 SinglesCard(
-                                    singleMatchPlayers = match,
+                                    p1Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player1id }].playerName,
+                                    p2Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player2id }].playerName,
+                                    p3Name = matchesListUiState.playersList[matchesListUiState.playersList.indexOfFirst { it.playerId ==  match.player3id }].playerName,
                                     modifier = Modifier
-                                        .padding(start = 25.dp)
+                                        .padding(start = 25.dp),
+                                    onSingleGroupClick = {
+                                        onSingleGroupClick(MatchType.Singles, match.singleGroupId)
+                                    }
                                 )
                             }
                             Divider()
@@ -199,7 +218,7 @@ fun VersusText(
 ) {
     Text(
         text = stringResource(R.string.versus_acronym),
-        color = Color.Red,
+        color = Color(0xFFD30000),
         modifier = modifier
             .padding(start = 10.dp, end = 10.dp),
         fontStyle = FontStyle.Italic
@@ -208,7 +227,10 @@ fun VersusText(
 
 @Composable
 fun SinglesCard(
-    singleMatchPlayers: SingleMatchPlayers,
+    p1Name: String,
+    p2Name: String,
+    p3Name: String,
+    onSingleGroupClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -226,14 +248,14 @@ fun SinglesCard(
                     .fillMaxHeight()
                     .weight(0.85f)
             ) {
-                Text(text = singleMatchPlayers.player1)
+                Text(text = p1Name)
                 VersusText()
-                Text(text = singleMatchPlayers.player2)
+                Text(text = p2Name)
                 VersusText()
-                Text(text = singleMatchPlayers.player3)
+                Text(text = p3Name)
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = onSingleGroupClick,
                 modifier = Modifier
                     .weight(0.15f)
                     .wrapContentWidth(Alignment.End)
@@ -250,7 +272,11 @@ fun SinglesCard(
 
 @Composable
 fun DoublesCard(
-    doubleMatchPlayers: DoubleMatchPlayers,
+    p1Name: String,
+    p2Name: String,
+    p3Name: String,
+    p4Name: String,
+    onDoubleGroupClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -268,26 +294,26 @@ fun DoublesCard(
                     .fillMaxHeight()
                     .weight(0.85f)
             ) {
-                Text(text = doubleMatchPlayers.player1)
+                Text(text = p1Name)
                 Text(
                     text = "/",
                     color = Color.Gray,
                     modifier = Modifier
                         .padding(start = 5.dp, end = 5.dp)
                 )
-                Text(text = doubleMatchPlayers.player2)
+                Text(text = p2Name)
                 VersusText()
-                Text(text = doubleMatchPlayers.player3)
+                Text(text = p3Name)
                 Text(
                     text = "/",
                     color = Color.Gray,
                     modifier = Modifier
                         .padding(start = 5.dp, end = 5.dp)
                 )
-                Text(text = doubleMatchPlayers.player4, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = p4Name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = onDoubleGroupClick,
                 modifier = Modifier
                     .weight(0.15f)
                     .wrapContentWidth(Alignment.End)
@@ -363,6 +389,9 @@ fun DoubleOrSingleTitleCard(
 fun DefaultTopBar(
     onBackClick: (() -> Unit)?,
     title: String,
+    icon: ImageVector,
+    containerColor: Color,
+    textColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -370,9 +399,23 @@ fun DefaultTopBar(
     ){
         TopAppBar(
             title = {
-                Text(
-                    text = title,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title,
+                        color = textColor,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = textColor,
+                        modifier = Modifier
+                            .padding(end = 15.dp)
+                    )
+                }
+
             },
             navigationIcon = {
                 if (onBackClick != null) {
@@ -381,15 +424,15 @@ fun DefaultTopBar(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = textColor,
                         )
                     }
                 }
-            }
-        )
-        Divider(
-            thickness = 1.dp,
-            color = Color.Black
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = containerColor
+            )
         )
     }
 }
@@ -494,27 +537,48 @@ fun MatchesListScreenPreview() {
             matchesListUiState = MatchesListUiState(
                 doubleMatchList = listOf(
                     DoubleMatchPlayers(
-                        0,"Zinho","Gian","Painho","Mainha"
+                        0,1,2,3,4
                     ),
                     DoubleMatchPlayers(
-                        0,"Damião","Gian","Painho","Zinho"
-                    ),
-                    DoubleMatchPlayers(
-                        0,"Zeguedega","Damião","Painho","Gian"
+                        1,2,4,5,6
                     ),
                 ),
                 singleMatchList = listOf(
                     SingleMatchPlayers(
-                        0,"Zinho","Gian","Painho"
+                        4,1,2,3
                     ),
                     SingleMatchPlayers(
-                        0,"Painho","Gian","Damião"
+                        5,4,5,6
                     ),
                 ),
+                playersList = listOf(
+                    Player(1, "Zinho"),
+                    Player(2, "Gian"),
+                    Player(3, "Painho"),
+                    Player(4, "Mainha"),
+                    Player(5, "Damião"),
+                    Player(6, "Deivinho"),
+                )
             ),
             onCreateNewMatch = {},
             onDeleteDoubleMatch = {},
-            onDeleteSingleMatch = {}
+            onDeleteSingleMatch = {},
+            onSingleGroupClick = {_, _ ->},
+            onDoubleGroupClick = {_, _ ->}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopBarPreview() {
+    PlacarBuracoTheme {
+        DefaultTopBar(
+            onBackClick = { /*TODO*/ },
+            title = "Resumo",
+            icon = Icons.Filled.Person,
+            containerColor = Color.White,
+            textColor = Color.Black
         )
     }
 }

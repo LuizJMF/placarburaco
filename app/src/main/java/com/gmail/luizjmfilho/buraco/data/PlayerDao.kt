@@ -20,4 +20,13 @@ interface PlayerDao {
     @Query("SELECT COUNT(playerName) FROM Player WHERE UPPER(playerName) = UPPER(:searchedName)")
     suspend fun numberOfPlayersWithThisName(searchedName: String): Int
 
+    @Query("SELECT playerId FROM Player WHERE playerName = :name")
+    suspend fun getPlayerIdFromName(name: String) : Int
+
+    @Query("SELECT * FROM Player")
+    suspend fun viewAllPlayersRegistered() : List<Player>
+
+    @Query("SELECT playerName FROM Player WHERE playerId = :id")
+    suspend fun getPlayerNameFromId(id: Int) : String
+
 }

@@ -41,10 +41,12 @@ class PlayersListViewModel @Inject constructor(
                         playerBeingAdded = "",
                         playersList = playersListRepository.readPlayer(),
                         nameError = null,
+                        isDialogShown = false
                     )
                 } else {
                     currentState.copy(
-                        nameError = addPlayerResult.nameError
+                        nameError = addPlayerResult.nameError,
+                        isDialogShown = true
                     )
                 }
             }
@@ -64,6 +66,22 @@ class PlayersListViewModel @Inject constructor(
 
     fun getInfo() : String {
         return originalInfo
+    }
+
+    fun onFloatingButtonClick() {
+        _uiState.update {  currentState ->
+            currentState.copy(
+                isDialogShown = true
+            )
+        }
+    }
+
+    fun onDismissDialog() {
+        _uiState.update {  currentState ->
+            currentState.copy(
+                isDialogShown = false
+            )
+        }
     }
 
 }

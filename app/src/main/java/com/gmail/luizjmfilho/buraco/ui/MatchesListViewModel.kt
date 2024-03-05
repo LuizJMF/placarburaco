@@ -26,6 +26,7 @@ class MatchesListViewModel @Inject constructor(
                 currenteState.copy(
                     doubleMatchList = matchesListRepository.viewAllDoublesMatches(),
                     singleMatchList = matchesListRepository.viewAllSinglesMatches(),
+                    playersList = matchesListRepository.viewAllPlayersRegistered()
                 )
             }
         }

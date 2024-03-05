@@ -26,40 +26,36 @@ class NewMatchViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _uiState.update {  currentState ->
-                if (playerInfo == null) {
-                    currentState.copy()
-                } else {
-                    when (matchTypeOnSelectMoment) {
-                        MatchType.Singles -> {
-                            currentState.copy(
-                                singlePlayersList = newPlayerList!!,
-                                matchType = matchTypeOnSelectMoment
-                            )
-                        }
-                        MatchType.Doubles -> {
-                            currentState.copy(
-                                doublePlayersList = newPlayerList!!,
-                                matchType = matchTypeOnSelectMoment
-                            )
-                        }
+        _uiState.update {  currentState ->
+            if (playerInfo == null) {
+                currentState.copy()
+            } else {
+                when (matchTypeOnSelectMoment) {
+                    MatchType.Singles -> {
+                        currentState.copy(
+                            singlePlayersList = newPlayerList!!,
+                            matchType = matchTypeOnSelectMoment
+                        )
                     }
-
+                    MatchType.Doubles -> {
+                        currentState.copy(
+                            doublePlayersList = newPlayerList!!,
+                            matchType = matchTypeOnSelectMoment
+                        )
+                    }
                 }
+
             }
         }
     }
 
     fun onToggleButtonClick() {
-        viewModelScope.launch {
-            _uiState.update {  currentState ->
-                currentState.copy(
-                    matchType = if (currentState.matchType == MatchType.Singles) MatchType.Doubles else MatchType.Singles,
-                    singlePlayersList = listOf(null, null, null),
-                    doublePlayersList = listOf(null, null, null, null),
-                )
-            }
+        _uiState.update {  currentState ->
+            currentState.copy(
+                matchType = if (currentState.matchType == MatchType.Singles) MatchType.Doubles else MatchType.Singles,
+                singlePlayersList = listOf(null, null, null),
+                doublePlayersList = listOf(null, null, null, null),
+            )
         }
     }
 
@@ -69,7 +65,10 @@ class NewMatchViewModel @Inject constructor(
                 when (matchType) {
 
                     MatchType.Singles -> {
-                        val singlePlayers = listOf(currentState.singlePlayersList[0]!!, currentState.singlePlayersList[1]!!, currentState.singlePlayersList[2]!!)
+                        val idP1 = newMatchRepository.getPlayerIdFromName(currentState.singlePlayersList[0]!!)
+                        val idP2 = newMatchRepository.getPlayerIdFromName(currentState.singlePlayersList[1]!!)
+                        val idP3 = newMatchRepository.getPlayerIdFromName(currentState.singlePlayersList[2]!!)
+                        val singlePlayers = listOf(idP1, idP2, idP3)
                         if (newMatchRepository.verifyIfSinglePlayersExist(singlePlayers)) {
                             currentState.copy(
                                 playersCheckedExists = true,
@@ -86,7 +85,11 @@ class NewMatchViewModel @Inject constructor(
                     }
 
                     MatchType.Doubles -> {
-                        val doublePlayers = listOf(currentState.doublePlayersList[0]!!, currentState.doublePlayersList[1]!!, currentState.doublePlayersList[2]!!, currentState.doublePlayersList[3]!!)
+                        val idP1 = newMatchRepository.getPlayerIdFromName(currentState.doublePlayersList[0]!!)
+                        val idP2 = newMatchRepository.getPlayerIdFromName(currentState.doublePlayersList[1]!!)
+                        val idP3 = newMatchRepository.getPlayerIdFromName(currentState.doublePlayersList[2]!!)
+                        val idP4 = newMatchRepository.getPlayerIdFromName(currentState.doublePlayersList[3]!!)
+                        val doublePlayers = listOf(idP1, idP2, idP3, idP4)
                         if (newMatchRepository.verifyIfDoublePlayersExist(doublePlayers)) {
                             currentState.copy(
                                 playersCheckedExists = true,

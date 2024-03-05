@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.gmail.luizjmfilho.buraco.ui.MatchSummaryScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.MatchesListScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.NewMatchScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.PlayersListScreenPrimaria
@@ -22,7 +23,13 @@ fun PlacarBuracoNavHost() {
             route = ScreenNames.MatchesList.name
         ) {
             MatchesListScreenPrimaria(
-                onCreateNewMatch = { navController.navigate(ScreenNames.NewMatch.name) }
+                onCreateNewMatch = { navController.navigate(ScreenNames.NewMatch.name) },
+                onSingleGroupClick = { matchType, singleGroupId ->
+                    navController.navigate("${ScreenNames.MatchSummary.name}/${listOf(matchType.name, singleGroupId.toString()).joinToString(",")}")
+                },
+                onDoubleGroupClick = { matchType, doubleGroupId ->
+                    navController.navigate("${ScreenNames.MatchSummary.name}/${listOf(matchType.name, doubleGroupId.toString()).joinToString(",")}")
+                },
             )
         }
 
@@ -55,6 +62,14 @@ fun PlacarBuracoNavHost() {
                 onSelectPlayer = { playerInfo ->
                     navController.navigate("${ScreenNames.NewMatch.name}/$playerInfo")
                 }
+            )
+        }
+
+        composable(
+            route = "${ScreenNames.MatchSummary.name}/{groupInfo}"
+        ) {
+            MatchSummaryScreenPrimaria(
+                onBackClick = { navController.navigateUp() }
             )
         }
     }

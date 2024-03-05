@@ -1,12 +1,14 @@
 package com.gmail.luizjmfilho.buraco.data
 
 import com.gmail.luizjmfilho.buraco.model.DoubleMatchPlayers
+import com.gmail.luizjmfilho.buraco.model.Player
 import com.gmail.luizjmfilho.buraco.model.SingleMatchPlayers
 import javax.inject.Inject
 
 class MatchesListRepository @Inject constructor(
     private val singleMatchPlayersDao: SingleMatchPlayersDao,
     private val doubleMatchPlayersDao: DoubleMatchPlayersDao,
+    private val playerDao: PlayerDao,
 ) {
 
     suspend fun viewAllSinglesMatches() : List<SingleMatchPlayers> {
@@ -18,11 +20,15 @@ class MatchesListRepository @Inject constructor(
     }
 
     suspend fun deleteDoubleMatch(match: DoubleMatchPlayers) {
-        doubleMatchPlayersDao.deleteDoubleMatch(match.player1, match.player2, match.player3, match.player4)
+        doubleMatchPlayersDao.deleteDoubleMatch(match.player1id, match.player2id, match.player3id, match.player4id)
     }
 
     suspend fun deleteSingleMatch(match: SingleMatchPlayers) {
-        singleMatchPlayersDao.deleteSingleMatch(match.player1, match.player2, match.player3)
+        singleMatchPlayersDao.deleteSingleMatch(match.player1id, match.player2id, match.player3id)
+    }
+
+    suspend fun viewAllPlayersRegistered() : List<Player> {
+        return playerDao.viewAllPlayersRegistered()
     }
 
 }

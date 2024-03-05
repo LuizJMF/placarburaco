@@ -60,6 +60,8 @@ fun PlayersListScreenPrimaria(
             playersNames[index.toInt()] = playerName
             onSelectPlayer(index + matchType + playersNames.joinToString(","))
         },
+        onFloatingButtonClick = playersListViewModel::onFloatingButtonClick,
+        onDismissDialog = playersListViewModel::onDismissDialog,
         modifier = modifier,
     )
 }
@@ -70,14 +72,16 @@ fun PlayersListScreenSecundaria(
     onAddPlayer: () -> Unit,
     onTypeNewPlayer: (String) -> Unit,
     onSelectPlayer: (String) -> Unit,
+    onFloatingButtonClick: () -> Unit,
+    onDismissDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isDialogShown by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { isDialogShown = true },
+                onClick = onFloatingButtonClick,
                 containerColor = Color(0xFF021CC5),
                 contentColor = Color.White
             ) {
@@ -112,17 +116,24 @@ fun PlayersListScreenSecundaria(
                     Divider()
                 }
             }
-            if (isDialogShown) {
+            if (playersListUiState.isDialogShown) {
                 AddPlayerDialog(
-                    onDismissRequest = { isDialogShown = false },
+                    onDismissRequest = onDismissDialog,
                     value = playersListUiState.playerBeingAdded,
                     onValueChange = {
                         onTypeNewPlayer(it)
                     },
                     onAddPlayer = {
                         onAddPlayer()
-                        isDialogShown = false
                     },
+                    isError = (playersListUiState.nameError != null),
+                    supportingText = {
+                        when (playersListUiState.nameError) {
+                            NameError.Empty -> Text(text = "Nome vazio")
+                            NameError.Exists -> Text(text = "Esse nome já existe")
+                            else -> {}
+                        }
+                    }
                 )
             }
         }
@@ -136,6 +147,8 @@ fun AddPlayerDialog(
     onValueChange: (String) -> Unit,
     onDismissRequest: () -> Unit,
     onAddPlayer: () -> Unit,
+    isError: Boolean,
+    supportingText: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val labelAndIconSchoolTextFieldColor = Color(0xFF021CC5)
@@ -171,6 +184,8 @@ fun AddPlayerDialog(
                         focusedTextColor = labelAndIconSchoolTextFieldColor,
                         unfocusedTextColor = labelAndIconSchoolTextFieldColor,
                     ),
+                    isError = isError,
+                    supportingText = supportingText
                 )
                 Text(
                     text = "${value.length}/15",
@@ -216,7 +231,9 @@ fun PlayersListScreenPreview() {
             ),
             onAddPlayer = {},
             onTypeNewPlayer = {},
-            onSelectPlayer = {}
+            onSelectPlayer = {},
+            onDismissDialog = {},
+            onFloatingButtonClick = {}
         )
     }
 }
