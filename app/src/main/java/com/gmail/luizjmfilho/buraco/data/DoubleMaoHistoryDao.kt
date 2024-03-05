@@ -14,4 +14,7 @@ interface DoubleMaoHistoryDao {
 
     @Query("SELECT SUM(ptsTeam1) AS ptsTeam1, SUM(ptsTeam2) AS ptsTeam2 FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId")
     suspend fun sumTeamPointsForPernaWhoseIdIs(doublePernaId: Int): TeamPoints
+
+    @Query("DELETE FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId")
+    suspend fun deleteAllDoubleMaoBasedOnPernaId(doublePernaId: Int)
 }

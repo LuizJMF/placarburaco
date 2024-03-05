@@ -23,4 +23,7 @@ interface DoubleNegaHistoryDao {
     @Query("SELECT MAX(doubleNegaId) FROM DoubleNegaHistory WHERE doubleGroupId = :doubleGroupId")
     suspend fun getMaxDoubleNegaId(doubleGroupId: Int): Int?
 
+    @Query("DELETE FROM DoubleNegaHistory WHERE doubleGroupId = :doubleGroupId")
+    suspend fun deleteAllDoubleNegasBasedOnGroupId(doubleGroupId: Int)
+
 }

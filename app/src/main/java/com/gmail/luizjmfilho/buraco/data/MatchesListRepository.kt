@@ -9,6 +9,12 @@ class MatchesListRepository @Inject constructor(
     private val singleMatchPlayersDao: SingleMatchPlayersDao,
     private val doubleMatchPlayersDao: DoubleMatchPlayersDao,
     private val playerDao: PlayerDao,
+    private val doubleNegaHistoryDao: DoubleNegaHistoryDao,
+    private val doublePernaHistoryDao: DoublePernaHistoryDao,
+    private val doubleMaoHistoryDao: DoubleMaoHistoryDao,
+    private val singleNegaHistoryDao: SingleNegaHistoryDao,
+    private val singlePernaHistoryDao: SinglePernaHistoryDao,
+    private val singleMaoHistoryDao: SingleMaoHistoryDao,
 ) {
 
     suspend fun viewAllSinglesMatches() : List<SingleMatchPlayers> {
@@ -31,4 +37,27 @@ class MatchesListRepository @Inject constructor(
         return playerDao.viewAllPlayersRegistered()
     }
 
+    suspend fun onDeleteAllSingleNegaPernaMaoDerivedFromGroupId(groupId: Int) {
+        val negasIdBeingDeleted = singleNegaHistoryDao.listSingleNegasIdOfGroupWhoseIdIs(groupId)
+        for (negaIdBeingDeleted in negasIdBeingDeleted) {
+            val pernasIdBeingDeleted = singlePernaHistoryDao.listSinglePernasIdOfNegaWhoseIdIs(negaIdBeingDeleted)
+            for (pernaIdBeingDelete in pernasIdBeingDeleted) {
+                singleMaoHistoryDao.deleteAllSingleMaoBasedOnPernaId(pernaIdBeingDelete)
+            }
+            singlePernaHistoryDao.deleteAllSinglePernasBasedOnNegaId(negaIdBeingDeleted)
+        }
+        singleNegaHistoryDao.deleteAllSingleNegasBasedOnGroupId(groupId)
+    }
+
+    suspend fun onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId(groupId: Int) {
+        val negasIdBeingDeleted = doubleNegaHistoryDao.listDoubleNegasIdOfGroupWhoseIdIs(groupId)
+        for (negaIdBeingDeleted in negasIdBeingDeleted) {
+            val pernasIdBeingDeleted = doublePernaHistoryDao.listDoublePernasIdOfNegaWhoseIdIs(negaIdBeingDeleted)
+            for (pernaIdBeingDelete in pernasIdBeingDeleted) {
+                doubleMaoHistoryDao.deleteAllDoubleMaoBasedOnPernaId(pernaIdBeingDelete)
+            }
+            doublePernaHistoryDao.deleteAllDoublePernasBasedOnNegaId(negaIdBeingDeleted)
+        }
+        doubleNegaHistoryDao.deleteAllDoubleNegasBasedOnGroupId(groupId)
+    }
 }

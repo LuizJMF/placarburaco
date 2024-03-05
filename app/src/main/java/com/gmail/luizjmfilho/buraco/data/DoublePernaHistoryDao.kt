@@ -19,4 +19,7 @@ interface DoublePernaHistoryDao {
 
     @Query("SELECT doublePernaId FROM DoublePernaHistory WHERE doubleNegaId = :doubleNegaId")
     suspend fun getDoublePernaIdFromNegaCreatedRightNow(doubleNegaId: Int): Int?
+
+    @Query("DELETE FROM DoublePernaHistory WHERE doubleNegaId = :doubleNegaId")
+    suspend fun deleteAllDoublePernasBasedOnNegaId(doubleNegaId: Int)
 }

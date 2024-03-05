@@ -15,4 +15,7 @@ interface SingleMaoHistoryDao {
 
     @Query("SELECT SUM(ptsP1) AS ptsP1, SUM(ptsP2) AS ptsP2, SUM(ptsP3) AS ptsP3 FROM SingleMaoHistory WHERE singlePernaId = :singlePernaId")
     suspend fun sumPlayerPointsForPernaWhoseIdIs(singlePernaId: Int): PlayerPoints
+
+    @Query("DELETE FROM SingleMaoHistory WHERE singlePernaId = :singlePernaId")
+    suspend fun deleteAllSingleMaoBasedOnPernaId(singlePernaId: Int)
 }

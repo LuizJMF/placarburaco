@@ -91,6 +91,8 @@ fun MatchesListScreenPrimaria(
         onDeleteSingleMatch = matchesListViewModel::onDeleteSingleMatch,
         onSingleGroupClick = onSingleGroupClick,
         onDoubleGroupClick = onDoubleGroupClick,
+        onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId = matchesListViewModel::onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId,
+        onDeleteAllSingleNegaPernaMaoDerivedFromGroupId = matchesListViewModel::onDeleteAllSingleNegaPernaMaoDerivedFromGroupId,
         modifier = modifier,
     )
 }
@@ -101,6 +103,8 @@ fun MatchesListScreenSecundaria(
     onCreateNewMatch: () -> Unit,
     onDeleteDoubleMatch: (DoubleMatchPlayers) -> Unit,
     onDeleteSingleMatch: (SingleMatchPlayers) -> Unit,
+    onDeleteAllSingleNegaPernaMaoDerivedFromGroupId: (Int) -> Unit,
+    onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId: (Int) -> Unit,
     onSingleGroupClick: (MatchType, Int) -> Unit,
     onDoubleGroupClick: (MatchType, Int) -> Unit,
     modifier: Modifier = Modifier
@@ -151,6 +155,7 @@ fun MatchesListScreenSecundaria(
                                 item = match,
                                 onDelete = {
                                     onDeleteDoubleMatch(it)
+                                    onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId(it.doubleGroupId)
                                 }
                             ) {
                                 DoublesCard(
@@ -190,6 +195,7 @@ fun MatchesListScreenSecundaria(
                                 item = match,
                                 onDelete = {
                                     onDeleteSingleMatch(it)
+                                    onDeleteAllSingleNegaPernaMaoDerivedFromGroupId(it.singleGroupId)
                                 }
                             ) {
                                 SinglesCard(
@@ -564,7 +570,9 @@ fun MatchesListScreenPreview() {
             onDeleteDoubleMatch = {},
             onDeleteSingleMatch = {},
             onSingleGroupClick = {_, _ ->},
-            onDoubleGroupClick = {_, _ ->}
+            onDoubleGroupClick = {_, _ ->},
+            onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId = {},
+            onDeleteAllSingleNegaPernaMaoDerivedFromGroupId = {}
         )
     }
 }

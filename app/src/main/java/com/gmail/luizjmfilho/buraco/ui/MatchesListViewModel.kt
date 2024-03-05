@@ -54,4 +54,15 @@ class MatchesListViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteAllSingleNegaPernaMaoDerivedFromGroupId(groupId: Int) {
+        viewModelScope.launch {
+            matchesListRepository.onDeleteAllSingleNegaPernaMaoDerivedFromGroupId(groupId)
+        }
+    }
+
+    fun onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId(groupId: Int) {
+        viewModelScope.launch {
+            matchesListRepository.onDeleteAllDoubleNegaPernaMaoDerivedFromGroupId(groupId)
+        }
+    }
 }

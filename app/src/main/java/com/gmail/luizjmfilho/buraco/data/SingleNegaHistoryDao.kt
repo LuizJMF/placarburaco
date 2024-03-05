@@ -23,4 +23,7 @@ interface SingleNegaHistoryDao {
 
     @Query("SELECT MAX(singleNegaId) FROM SingleNegaHistory WHERE singleGroupId = :singleGroupId")
     suspend fun getMaxSingleNegaId(singleGroupId: Int): Int?
+
+    @Query("DELETE FROM SingleNegaHistory WHERE singleGroupId = :singleGroupId")
+    suspend fun deleteAllSingleNegasBasedOnGroupId(singleGroupId: Int)
 }
