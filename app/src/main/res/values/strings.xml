@@ -18,6 +18,9 @@
     <string name="to_select_players_sequence">Selecione a ordem dos jogadores à mesa:</string>
     <string name="which_player_starts">Qual jogador começa a primeira mão?</string>
     <string name="nega_summary_title">Resumo das negas</string>
+    <string name="perna">Perna</string>
+    <string name="pernas_summary_title">Resumo das pernas</string>
+    <string name="new_perna">Nova perna</string>
     <plurals name="winner">
         <item quantity="one">Vencedor(a)</item>
         <item quantity="other">Vencedores(as)</item>

@@ -62,7 +62,7 @@ class MatchSummaryViewModel @Inject constructor(
                 MatchType.Singles -> {
                     val negasIdPlayed = matchSummaryRepository.listSingleNegasIdOfGroupWhoseIdIs(groupId)
                     for (negaId in negasIdPlayed) {
-                        var negaInfo = NegaInfo(negasIdPlayed.indexOf(negaId) + 1, MatchStatus.Underway, null)
+                        var negaInfo = NegaInfo(negaId,negasIdPlayed.indexOf(negaId) + 1, MatchStatus.Underway, null)
                         val pernasIdPlayed = matchSummaryRepository.listSinglePernasIdOfNegaWhoseIdIs(negaId)
                         val pairOfPernas = mutableListOf<Pair<MatchStatus, Int?>>()
                         for (pernaId in pernasIdPlayed) {
@@ -96,7 +96,7 @@ class MatchSummaryViewModel @Inject constructor(
                 MatchType.Doubles -> {
                     val negasIdPlayed = matchSummaryRepository.listDoubleNegasIdOfGroupWhoseIdIs(groupId)
                     for (negaId in negasIdPlayed) {
-                        var negaInfo = NegaInfo(negasIdPlayed.indexOf(negaId) + 1, MatchStatus.Underway, null)
+                        var negaInfo = NegaInfo(negaId,negasIdPlayed.indexOf(negaId) + 1, MatchStatus.Underway, null)
                         val pernasIdPlayed = matchSummaryRepository.listDoublePernasIdOfNegaWhoseIdIs(negaId)
                         val pairOfPernas = mutableListOf<Pair<MatchStatus, Int?>>()
                         for (pernaId in pernasIdPlayed) {

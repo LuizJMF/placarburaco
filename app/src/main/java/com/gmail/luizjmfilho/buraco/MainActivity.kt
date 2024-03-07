@@ -14,6 +14,7 @@ enum class ScreenNames {
     NewMatch,
     PlayersList,
     MatchSummary,
+    PernasSummary,
 }
 
 @AndroidEntryPoint

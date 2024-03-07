@@ -3,7 +3,6 @@ package com.gmail.luizjmfilho.buraco.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.gmail.luizjmfilho.buraco.model.DoubleNegaHistory
 import com.gmail.luizjmfilho.buraco.model.SingleNegaHistory
 
 @Dao
@@ -26,4 +25,10 @@ interface SingleNegaHistoryDao {
 
     @Query("DELETE FROM SingleNegaHistory WHERE singleGroupId = :singleGroupId")
     suspend fun deleteAllSingleNegasBasedOnGroupId(singleGroupId: Int)
+
+    @Query("SELECT singleNegaNumber FROM SingleNegaHistory WHERE singleNegaId = :negaId ")
+    suspend fun getSingleNegaNumberFromId(negaId: Int): Int
+
+    @Query("SELECT singleGroupId FROM SingleNegaHistory WHERE singleNegaId = :negaId")
+    suspend fun getSingleGroupIdFromNegaId(negaId: Int): Int
 }

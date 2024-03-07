@@ -18,6 +18,7 @@ data class MatchSummaryUiState(
 )
 
 data class NegaInfo(
+    val id: Int,
     val num: Int,
     val status: MatchStatus,
     val winner: String?,

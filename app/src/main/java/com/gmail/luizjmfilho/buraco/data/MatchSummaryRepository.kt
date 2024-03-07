@@ -24,14 +24,6 @@ class MatchSummaryRepository @Inject constructor(
     private val singleMaoHistoryDao: SingleMaoHistoryDao,
 ) {
 
-    suspend fun countDoubleNegasPlayed(doubleGroupId: Int): Int {
-        return doubleNegaHistoryDao.countDoubleNegasPlayed(doubleGroupId)
-    }
-
-    suspend fun countSingleNegasPlayed(singleGroupId: Int): Int {
-        return singleNegaHistoryDao.countSingleNegasPlayed(singleGroupId)
-    }
-
     suspend fun listDoublePernasIdOfNegaWhoseIdIs(negaId: Int): List<Int> {
         return doublePernaHistoryDao.listDoublePernasIdOfNegaWhoseIdIs(negaId)
     }
@@ -98,7 +90,7 @@ class MatchSummaryRepository @Inject constructor(
         doubleMaoHistoryDao.addDoubleMao(doubleMao)
     }
 
-    suspend fun addSingleNega(groupId: Int, isNormalOrder: Boolean, firstPlayerToPlay: String, dateAndTime: String,) {
+    suspend fun addSingleNega(groupId: Int, isNormalOrder: Boolean, firstPlayerToPlay: String, dateAndTime: String) {
         val lastNegaNumber = singleNegaHistoryDao.getMaxSingleNegaNumber(groupId) ?: 0
         val singleNegaMatch = SingleNegaHistory(
             singleGroupId = groupId,

@@ -24,4 +24,7 @@ interface SinglePernaHistoryDao {
     @Query("DELETE FROM SinglePernaHistory WHERE singleNegaId = :singleNegaId")
     suspend fun deleteAllSinglePernasBasedOnNegaId(singleNegaId: Int)
 
+    @Query("SELECT MAX(singlePernaId) FROM SinglePernaHistory WHERE singleNegaId = :singleNegaId")
+    suspend fun getMaxSinglePernaIdFromNega(singleNegaId: Int): Int?
+
 }

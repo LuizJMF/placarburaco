@@ -22,4 +22,7 @@ interface DoublePernaHistoryDao {
 
     @Query("DELETE FROM DoublePernaHistory WHERE doubleNegaId = :doubleNegaId")
     suspend fun deleteAllDoublePernasBasedOnNegaId(doubleNegaId: Int)
+
+    @Query("SELECT MAX(doublePernaId) FROM DoublePernaHistory WHERE doubleNegaId = :doubleNegaId")
+    suspend fun getMaxDoublePernaIdFromNega(doubleNegaId: Int): Int?
 }

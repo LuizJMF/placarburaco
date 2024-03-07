@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gmail.luizjmfilho.buraco.ui.MatchSummaryScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.MatchesListScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.NewMatchScreenPrimaria
+import com.gmail.luizjmfilho.buraco.ui.PernasSummaryScreenPrimaria
 import com.gmail.luizjmfilho.buraco.ui.PlayersListScreenPrimaria
 
 @Composable
@@ -69,6 +70,17 @@ fun PlacarBuracoNavHost() {
             route = "${ScreenNames.MatchSummary.name}/{groupInfo}"
         ) {
             MatchSummaryScreenPrimaria(
+                onBackClick = { navController.navigateUp() },
+                onGoToNega = { matchType, negaId ->
+                    navController.navigate("${ScreenNames.PernasSummary.name}/${listOf(matchType.name, negaId.toString()).joinToString(",")}")
+                }
+            )
+        }
+
+        composable(
+            route = "${ScreenNames.PernasSummary.name}/{negaInfo}"
+        ) {
+            PernasSummaryScreenPrimaria(
                 onBackClick = { navController.navigateUp() }
             )
         }

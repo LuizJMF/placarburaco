@@ -224,7 +224,7 @@ fun VersusText(
 ) {
     Text(
         text = stringResource(R.string.versus_acronym),
-        color = Color(0xFFD30000),
+        color = Color(0xFFFF0000),
         modifier = modifier
             .padding(start = 10.dp, end = 10.dp),
         fontStyle = FontStyle.Italic

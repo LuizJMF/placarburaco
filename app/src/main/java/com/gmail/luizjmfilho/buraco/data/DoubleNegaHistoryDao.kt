@@ -26,4 +26,9 @@ interface DoubleNegaHistoryDao {
     @Query("DELETE FROM DoubleNegaHistory WHERE doubleGroupId = :doubleGroupId")
     suspend fun deleteAllDoubleNegasBasedOnGroupId(doubleGroupId: Int)
 
+    @Query("SELECT doubleNegaNumber FROM DoubleNegaHistory WHERE doubleNegaId = :negaId ")
+    suspend fun getDoubleNegaNumberFromId(negaId: Int): Int
+
+    @Query("SELECT doubleGroupId FROM DoubleNegaHistory WHERE doubleNegaId = :negaId")
+    suspend fun getDoubleGroupIdFromNegaId(negaId: Int): Int
 }

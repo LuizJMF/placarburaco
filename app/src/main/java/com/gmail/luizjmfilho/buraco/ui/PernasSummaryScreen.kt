@@ -1,10 +1,6 @@
 package com.gmail.luizjmfilho.buraco.ui
 
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,13 +30,10 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -50,75 +43,73 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gmail.luizjmfilho.buraco.R
 import com.gmail.luizjmfilho.buraco.ui.theme.PlacarBuracoTheme
 
 @Composable
-fun MatchSummaryScreenPrimaria(
+fun PernasSummaryScreenPrimaria(
     modifier: Modifier = Modifier,
-    onGoToNega: (MatchType, Int) -> Unit,
     onBackClick: () -> Unit,
-    matchSummaryViewModel: MatchSummaryViewModel = hiltViewModel(),
+    pernasSummaryViewModel: PernasSummaryViewModel = hiltViewModel(),
 ) {
 
-    val matchSummaryUiState by matchSummaryViewModel.uiState.collectAsState()
+    val pernasSummaryUiState by pernasSummaryViewModel.uiState.collectAsState()
 
-    MatchSummaryScreenSecundaria(
-        matchSummaryUiState = matchSummaryUiState,
+    PernasSummaryScreenSecundaria(
+        pernasSummaryUiState = pernasSummaryUiState,
         onBackClick = onBackClick,
-        onCreateNega = matchSummaryViewModel::onCreateNega,
-        onGoToNega = onGoToNega,
+        onCreatePerna = pernasSummaryViewModel::onCreatePerna,
         modifier = modifier,
     )
 }
 
 @Composable
-fun MatchSummaryScreenSecundaria(
-    matchSummaryUiState: MatchSummaryUiState,
+fun PernasSummaryScreenSecundaria(
+    pernasSummaryUiState: PernasSummaryUiState,
+    onCreatePerna: (String) -> Unit,
     onBackClick: () -> Unit,
-    onGoToNega: (MatchType, Int) -> Unit,
-    onCreateNega: (String, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     var isDialogShown by rememberSaveable { mutableStateOf(false) }
+    val isFabEnabled = when(pernasSummaryUiState.matchType) {
+        MatchType.Singles -> (pernasSummaryUiState.pernaInfoList.size < 4)
+        MatchType.Doubles -> (pernasSummaryUiState.pernaInfoList.size < 3)
+
+    }
 
     Scaffold(
         modifier = modifier,
         topBar = {
             DefaultTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(R.string.nega_summary_title),
-                icon = when(matchSummaryUiState.matchType) {
+                title = "Nega ${pernasSummaryUiState.negaNum}",
+                icon = when(pernasSummaryUiState.matchType) {
                     MatchType.Singles -> Icons.Filled.Person
                     MatchType.Doubles -> Icons.Filled.People
                 },
-                containerColor = Color(0xFF021CC5),
+                containerColor = Color(0xFF1B6F1E),
                 textColor = Color.White
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
         bottomBar = {
             BottomAppBar(
-                containerColor = Color(0xFF69B1FF),
+                containerColor = Color(0xFFA4FF94),
                 modifier = Modifier
                     .height(70.dp)
             ) {
@@ -128,21 +119,15 @@ fun MatchSummaryScreenSecundaria(
                         .fillMaxHeight()
                         .padding(bottom = 5.dp)
                 ) {
-//                    Spacer(modifier = Modifier.weight(1f))
-//                    IconButton(
-//                        onClick = { /*TODO*/ }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.FormatListNumbered,
-//                            contentDescription = null,
-//                        )
-//                    }
                     Spacer(modifier = Modifier.weight(1f))
                     FloatingActionButton(
-                        onClick = { isDialogShown = true },
-                        containerColor = Color(0xFF021CC5),
+                        onClick = {
+                            if (isFabEnabled) {
+                                isDialogShown = true
+                            }
+                        },
+                        containerColor = if(isFabEnabled) Color(0xFF1B6F1E) else Color(0xFFB8B8B8),
                         contentColor = Color.White,
-
                         ) {
                         Icon(
                             imageVector = Icons.Filled.Add,
@@ -150,15 +135,6 @@ fun MatchSummaryScreenSecundaria(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
-//                    IconButton(
-//                        onClick = { /*TODO*/ }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Leaderboard,
-//                            contentDescription = null,
-//                        )
-//                    }
-//                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -172,7 +148,7 @@ fun MatchSummaryScreenSecundaria(
             Column {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF69B1FF),
+                        containerColor = Color(0xFFA4FF94),
                     ),
                     shape = RectangleShape,
                 ) {
@@ -181,15 +157,14 @@ fun MatchSummaryScreenSecundaria(
                             .padding(5.dp)
                             .fillMaxWidth()
                             .wrapContentWidth()
-                            .height(22.dp)
                     ) {
-                        if (matchSummaryUiState.playerNames.isEmpty()) {
+                        if (pernasSummaryUiState.playerNames.isEmpty()) {
                             Text(text = "-")
                         } else {
-                            when (matchSummaryUiState.matchType) {
+                            when (pernasSummaryUiState.matchType) {
                                 MatchType.Singles -> {
                                     Text(
-                                        text = matchSummaryUiState.playerNames[0],
+                                        text = pernasSummaryUiState.playerNames[0],
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
                                             .weight(1f)
@@ -197,7 +172,7 @@ fun MatchSummaryScreenSecundaria(
                                     )
                                     VersusText()
                                     Text(
-                                        text = matchSummaryUiState.playerNames[1],
+                                        text = pernasSummaryUiState.playerNames[1],
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
                                             .weight(1f)
@@ -205,7 +180,7 @@ fun MatchSummaryScreenSecundaria(
                                     )
                                     VersusText()
                                     Text(
-                                        text = matchSummaryUiState.playerNames[2],
+                                        text = pernasSummaryUiState.playerNames[2],
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
                                             .weight(1f)
@@ -220,14 +195,14 @@ fun MatchSummaryScreenSecundaria(
                                             .weight(1f)
                                             .wrapContentWidth()
                                     ) {
-                                        Text(text = matchSummaryUiState.playerNames[0])
+                                        Text(text = pernasSummaryUiState.playerNames[0])
                                         Text(
                                             text = "/",
                                             modifier = Modifier
                                                 .padding(start = 5.dp, end = 5.dp),
                                             color = Color(0xFF555555),
                                         )
-                                        Text(text = matchSummaryUiState.playerNames[1], overflow = TextOverflow.Ellipsis)
+                                        Text(text = pernasSummaryUiState.playerNames[1])
                                     }
                                     VersusText()
                                     Row(
@@ -235,14 +210,14 @@ fun MatchSummaryScreenSecundaria(
                                             .weight(1f)
                                             .wrapContentWidth()
                                     ) {
-                                        Text(text = matchSummaryUiState.playerNames[2])
+                                        Text(text = pernasSummaryUiState.playerNames[2])
                                         Text(
                                             text = "/",
                                             modifier = Modifier
                                                 .padding(start = 5.dp, end = 5.dp),
                                             color = Color(0xFF555555),
                                         )
-                                        Text(text = matchSummaryUiState.playerNames[3], overflow = TextOverflow.Ellipsis)
+                                        Text(text = pernasSummaryUiState.playerNames[3])
                                     }
                                 }
                             }
@@ -256,7 +231,7 @@ fun MatchSummaryScreenSecundaria(
                 ) {
                     Row {
                         Text(
-                            text = stringResource(R.string.nega),
+                            text = stringResource(R.string.perna),
                             modifier = Modifier
                                 .weight(0.12f)
                                 .wrapContentWidth(),
@@ -272,7 +247,7 @@ fun MatchSummaryScreenSecundaria(
                         Text(
                             text = pluralStringResource(
                                 id = R.plurals.winner,
-                                count = if (matchSummaryUiState.matchType == MatchType.Singles) 1 else 2
+                                count = if (pernasSummaryUiState.matchType == MatchType.Singles) 1 else 2
                             ),
                             modifier = Modifier
                                 .weight(0.5f)
@@ -282,8 +257,8 @@ fun MatchSummaryScreenSecundaria(
                         Spacer(modifier = Modifier.width(48.dp))
                     }
                     Divider()
-                    if (matchSummaryUiState.negaInfoList.isNotEmpty()) {
-                        matchSummaryUiState.negaInfoList.forEachIndexed { index, negaInfo ->
+                    if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
+                        pernasSummaryUiState.pernaInfoList.forEachIndexed { index, negaInfo ->
                             Row(
                                 modifier = Modifier
                                     .height(48.dp),
@@ -307,10 +282,11 @@ fun MatchSummaryScreenSecundaria(
                                     text = negaInfo.winner ?: "-",
                                     modifier = Modifier
                                         .weight(0.5f)
-                                        .wrapContentWidth()
+                                        .wrapContentWidth(),
+                                    textAlign = TextAlign.Center
                                 )
                                 IconButton(
-                                    onClick = { onGoToNega(matchSummaryUiState.matchType, negaInfo.id) }
+                                    onClick = { /*TODO*/ }
                                 ) {
                                     Icon(imageVector = Icons.Filled.ArrowRight, contentDescription = null)
                                 }
@@ -321,12 +297,11 @@ fun MatchSummaryScreenSecundaria(
                 }
             }
             if (isDialogShown) {
-                NewNegaDialog(
-                    playerNames = matchSummaryUiState.playerNames,
-                    matchType = matchSummaryUiState.matchType,
+                NewPernaDialog(
+                    playerNames = pernasSummaryUiState.playerNames,
                     onDismissRequest = { isDialogShown = false },
-                    onConfirmClick = { firstPlayerToPlay, isNormalOrder ->
-                        onCreateNega(firstPlayerToPlay, isNormalOrder)
+                    onConfirmClick = { firstPlayerToPlay ->
+                        onCreatePerna(firstPlayerToPlay)
                         isDialogShown = false
                     }
                 )
@@ -336,60 +311,22 @@ fun MatchSummaryScreenSecundaria(
 }
 
 @Composable
-fun NewNegaDialog(
+fun NewPernaDialog(
     playerNames: List<String>,
-    matchType: MatchType,
     onDismissRequest: () -> Unit,
-    onConfirmClick: (String, Boolean) -> Unit,
+    onConfirmClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedName: String? by rememberSaveable { mutableStateOf(null) }
-    var selectedOrder: Int? by rememberSaveable { mutableStateOf(null) }
-    val isNormalOrder = if (selectedOrder == null) null else (selectedOrder == 1)
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text(text = stringResource(R.string.new_nega)) },
+        title = { Text(text = stringResource(R.string.new_perna)) },
         text = {
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = stringResource(R.string.to_select_players_sequence),
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF021CC5),
-                )
-                for (i in 1..2) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (selectedOrder == i),
-                                onClick = {
-                                    selectedOrder = i
-                                }
-                            )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (selectedOrder == i),
-                            onClick = {
-                                selectedOrder = i
-                            },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = Color(0xFF021CC5),
-                            )
-                        )
-                        Text(
-                            text = when (matchType) {
-                                MatchType.Singles -> "${playerNames[0]} marca ${playerNames[i]}"
-                                MatchType.Doubles -> "${playerNames[0]} marca ${playerNames[i + 1]}"
-                            }
-                        )
-                    }
-                }
                 Text(
                     text = stringResource(R.string.which_player_starts),
                     fontWeight = FontWeight.Bold,
@@ -434,8 +371,8 @@ fun NewNegaDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onConfirmClick(selectedName!!, isNormalOrder!!) },
-                enabled = ((selectedName != null) && (selectedOrder != null))
+                onClick = { onConfirmClick(selectedName!!) },
+                enabled = (selectedName != null)
             ) {
                 Text(
                     text = stringResource(R.string.confirm),
@@ -449,33 +386,33 @@ fun NewNegaDialog(
 
 @Preview
 @Composable
-fun NewNegaDialogPreview() {
+fun NewPernaDialogPreview() {
     PlacarBuracoTheme {
-        NewNegaDialog(
+        NewPernaDialog(
             playerNames = listOf("Zinho", "Gian", "Mainha", "Painho"),
-            matchType = MatchType.Doubles,
             onDismissRequest = { /*TODO*/ },
-            onConfirmClick = {_, _ ->}
+            onConfirmClick = {}
         )
     }
 }
 
 @Preview
 @Composable
-fun MatchSummaryScreenPreview() {
+fun PernasSummaryScreenPreview() {
     PlacarBuracoTheme {
-        MatchSummaryScreenSecundaria(
-            matchSummaryUiState = MatchSummaryUiState(
-                matchType = MatchType.Singles,
-                playerNames = listOf("Zinho", "Gian", "Painho"),
-                negaInfoList = listOf(
-                    NegaInfo(1, 1, MatchStatus.Finished, "Zinho"),
-                    NegaInfo(1, 1, MatchStatus.Underway, null),
+        PernasSummaryScreenSecundaria(
+            pernasSummaryUiState = PernasSummaryUiState(
+                matchType = MatchType.Doubles,
+                playerNames = listOf("Zinho", "Gian", "Painho", "Mainha"),
+                negaNum = 12,
+                pernaInfoList = listOf(
+                    PernaInfo(1, 1, MatchStatus.Finished, "Zinho / Gian"),
+                    PernaInfo(2, 2, MatchStatus.Finished, "Painho / Mainha"),
+                    PernaInfo(3, 3, MatchStatus.Underway, null),
                 )
             ),
             onBackClick = {},
-            onCreateNega = {_, _ ->},
-            onGoToNega = {_, _ ->}
+            onCreatePerna = {}
         )
     }
 }
