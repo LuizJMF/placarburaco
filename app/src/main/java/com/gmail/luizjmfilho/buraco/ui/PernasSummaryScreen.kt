@@ -160,6 +160,8 @@ fun PernasSummaryScreenSecundaria(
                             .padding(5.dp)
                             .fillMaxWidth()
                             .wrapContentWidth()
+                            .height(22.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (pernasSummaryUiState.playerNames.isEmpty()) {
                             Text(text = "-")

@@ -181,7 +181,8 @@ fun MatchSummaryScreenSecundaria(
                             .padding(5.dp)
                             .fillMaxWidth()
                             .wrapContentWidth()
-                            .height(22.dp)
+                            .height(22.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (matchSummaryUiState.playerNames.isEmpty()) {
                             Text(text = "-")
