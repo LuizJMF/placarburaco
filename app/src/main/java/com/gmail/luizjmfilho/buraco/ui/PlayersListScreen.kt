@@ -188,7 +188,7 @@ fun AddPlayerDialog(
                     supportingText = supportingText
                 )
                 Text(
-                    text = "${value.length}/15",
+                    text = "${value.length}/10",
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.End)

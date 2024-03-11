@@ -31,4 +31,7 @@ interface SingleNegaHistoryDao {
 
     @Query("SELECT singleGroupId FROM SingleNegaHistory WHERE singleNegaId = :negaId")
     suspend fun getSingleGroupIdFromNegaId(negaId: Int): Int
+
+    @Query("SELECT isP2AfterP1 FROM SingleNegaHistory WHERE singleNegaId = :singleNegaId")
+    suspend fun isP2AfterP1FromNegaId(singleNegaId: Int): Boolean
 }

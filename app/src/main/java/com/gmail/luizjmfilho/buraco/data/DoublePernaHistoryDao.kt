@@ -25,4 +25,10 @@ interface DoublePernaHistoryDao {
 
     @Query("SELECT MAX(doublePernaId) FROM DoublePernaHistory WHERE doubleNegaId = :doubleNegaId")
     suspend fun getMaxDoublePernaIdFromNega(doubleNegaId: Int): Int?
+
+    @Query("SELECT doublePernaNumber FROM DoublePernaHistory WHERE doublePernaId = :doublePernaId")
+    suspend fun getDoublePernaNumberFromPernaId(doublePernaId: Int): Int
+
+    @Query("SELECT doubleNegaId FROM DoublePernaHistory WHERE doublePernaId = :doublePernaId")
+    suspend fun getDoubleNegaIdFromPernaId(doublePernaId: Int): Int
 }

@@ -21,6 +21,9 @@
     <string name="perna">Perna</string>
     <string name="pernas_summary_title">Resumo das pernas</string>
     <string name="new_perna">Nova perna</string>
+    <string name="delete_last_mao">Deletar a última mão</string>
+    <string name="winner_by_wo">Vitória por WO</string>
+    <string name="wo">WO</string>
     <plurals name="winner">
         <item quantity="one">Vencedor(a)</item>
         <item quantity="other">Vencedores(as)</item>

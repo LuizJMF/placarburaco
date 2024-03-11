@@ -56,7 +56,7 @@ class PlayersListViewModel @Inject constructor(
     fun onTypeNewPlayer(playerName: String) {
         viewModelScope.launch {
             _uiState.update { currentState ->
-                val newName = if (playerName.length <= 15) playerName else currentState.playerBeingAdded
+                val newName = if (playerName.length <= 10) playerName else currentState.playerBeingAdded
                 currentState.copy(
                     playerBeingAdded = newName,
                 )

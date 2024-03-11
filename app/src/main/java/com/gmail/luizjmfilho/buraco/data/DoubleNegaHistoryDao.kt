@@ -31,4 +31,7 @@ interface DoubleNegaHistoryDao {
 
     @Query("SELECT doubleGroupId FROM DoubleNegaHistory WHERE doubleNegaId = :negaId")
     suspend fun getDoubleGroupIdFromNegaId(negaId: Int): Int
+
+    @Query("SELECT isP3AfterP1 FROM DoubleNegaHistory WHERE doubleNegaId = :doubleNegaId")
+    suspend fun isP3AfterP1FromNegaId(doubleNegaId: Int): Boolean
 }

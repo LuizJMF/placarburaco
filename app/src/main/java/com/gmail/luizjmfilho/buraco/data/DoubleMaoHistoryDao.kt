@@ -17,4 +17,22 @@ interface DoubleMaoHistoryDao {
 
     @Query("DELETE FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId")
     suspend fun deleteAllDoubleMaoBasedOnPernaId(doublePernaId: Int)
+
+    @Query("SELECT * FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId")
+    suspend fun viewAllDoubleMaosFromPernaId(doublePernaId: Int): List<DoubleMaoHistory>
+
+    @Query("SELECT whoStarts FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId AND doubleMaoNumber = (SELECT MAX(doubleMaoNumber) FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId)")
+    suspend fun getDoubleStartingPlayerIdFromLastActiveMao(doublePernaId: Int): Int
+
+    @Query("SELECT MAX(doubleMaoNumber) FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId")
+    suspend fun getMaxDoubleMaoNumber(doublePernaId: Int): Int
+
+    @Query("UPDATE DoubleMaoHistory SET ptsTeam1 = :newPtsTeam1 WHERE doublePernaId = :pernaId AND doubleMaoNumber = :maoNumber")
+    suspend fun updatePtsTeam1ForSingleMaoId(pernaId: Int, newPtsTeam1: Int, maoNumber: Int)
+
+    @Query("UPDATE DoubleMaoHistory SET ptsTeam2 = :newPtsTeam2 WHERE doublePernaId = :pernaId AND doubleMaoNumber = :maoNumber")
+    suspend fun updatePtsTeam2ForSingleMaoId(pernaId: Int, newPtsTeam2: Int, maoNumber: Int)
+
+    @Query("DELETE FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId AND doubleMaoNumber = (SELECT MAX(doubleMaoNumber) FROM DoubleMaoHistory WHERE doublePernaId = :doublePernaId)")
+    suspend fun deleteLastDoubleMaoFromPernaId(doublePernaId: Int)
 }

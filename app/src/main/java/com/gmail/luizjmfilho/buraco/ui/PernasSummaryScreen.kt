@@ -64,6 +64,7 @@ import com.gmail.luizjmfilho.buraco.ui.theme.PlacarBuracoTheme
 fun PernasSummaryScreenPrimaria(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onGoToPerna: (MatchType, Int) -> Unit,
     pernasSummaryViewModel: PernasSummaryViewModel = hiltViewModel(),
 ) {
 
@@ -73,6 +74,7 @@ fun PernasSummaryScreenPrimaria(
         pernasSummaryUiState = pernasSummaryUiState,
         onBackClick = onBackClick,
         onCreatePerna = pernasSummaryViewModel::onCreatePerna,
+        onGoToPerna = onGoToPerna,
         modifier = modifier,
     )
 }
@@ -82,6 +84,7 @@ fun PernasSummaryScreenSecundaria(
     pernasSummaryUiState: PernasSummaryUiState,
     onCreatePerna: (String) -> Unit,
     onBackClick: () -> Unit,
+    onGoToPerna: (MatchType, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -258,7 +261,7 @@ fun PernasSummaryScreenSecundaria(
                     }
                     Divider()
                     if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
-                        pernasSummaryUiState.pernaInfoList.forEachIndexed { index, negaInfo ->
+                        pernasSummaryUiState.pernaInfoList.forEachIndexed { index, pernaInfo ->
                             Row(
                                 modifier = Modifier
                                     .height(48.dp),
@@ -271,22 +274,22 @@ fun PernasSummaryScreenSecundaria(
                                         .wrapContentWidth()
                                 )
                                 Icon(
-                                    imageVector = if (negaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
+                                    imageVector = if (pernaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
                                     contentDescription = null,
                                     modifier = Modifier
                                         .weight(0.18f)
                                         .wrapContentWidth(),
-                                    tint = if (negaInfo.status == MatchStatus.Finished) Color(0xFF4CAF50) else Color(0xFFFFC107),
+                                    tint = if (pernaInfo.status == MatchStatus.Finished) Color(0xFF4CAF50) else Color(0xFFFFC107),
                                 )
                                 Text(
-                                    text = negaInfo.winner ?: "-",
+                                    text = pernaInfo.winner ?: "-",
                                     modifier = Modifier
                                         .weight(0.5f)
                                         .wrapContentWidth(),
                                     textAlign = TextAlign.Center
                                 )
                                 IconButton(
-                                    onClick = { /*TODO*/ }
+                                    onClick = { onGoToPerna(pernasSummaryUiState.matchType, pernaInfo.id) }
                                 ) {
                                     Icon(imageVector = Icons.Filled.ArrowRight, contentDescription = null)
                                 }
@@ -412,7 +415,8 @@ fun PernasSummaryScreenPreview() {
                 )
             ),
             onBackClick = {},
-            onCreatePerna = {}
+            onCreatePerna = {},
+            onGoToPerna = {_, _ ->}
         )
     }
 }
