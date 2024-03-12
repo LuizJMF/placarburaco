@@ -283,40 +283,55 @@ fun MatchSummaryScreenSecundaria(
                         Spacer(modifier = Modifier.width(48.dp))
                     }
                     Divider()
-                    if (matchSummaryUiState.negaInfoList.isNotEmpty()) {
-                        matchSummaryUiState.negaInfoList.forEachIndexed { index, negaInfo ->
-                            Row(
-                                modifier = Modifier
-                                    .height(48.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = (index + 1).toString(),
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        if (matchSummaryUiState.negaInfoList.isNotEmpty()) {
+                            matchSummaryUiState.negaInfoList.forEachIndexed { index, negaInfo ->
+                                Row(
                                     modifier = Modifier
-                                        .weight(0.12f)
-                                        .wrapContentWidth()
-                                )
-                                Icon(
-                                    imageVector = if (negaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .weight(0.18f)
-                                        .wrapContentWidth(),
-                                    tint = if (negaInfo.status == MatchStatus.Finished) Color(0xFF4CAF50) else Color(0xFFFFC107),
-                                )
-                                Text(
-                                    text = negaInfo.winner ?: "-",
-                                    modifier = Modifier
-                                        .weight(0.5f)
-                                        .wrapContentWidth()
-                                )
-                                IconButton(
-                                    onClick = { onGoToNega(matchSummaryUiState.matchType, negaInfo.id) }
+                                        .height(48.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(imageVector = Icons.Filled.ArrowRight, contentDescription = null)
+                                    Text(
+                                        text = (index + 1).toString(),
+                                        modifier = Modifier
+                                            .weight(0.12f)
+                                            .wrapContentWidth()
+                                    )
+                                    Icon(
+                                        imageVector = if (negaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .weight(0.18f)
+                                            .wrapContentWidth(),
+                                        tint = if (negaInfo.status == MatchStatus.Finished) Color(
+                                            0xFF4CAF50
+                                        ) else Color(0xFFFFC107),
+                                    )
+                                    Text(
+                                        text = negaInfo.winner ?: "-",
+                                        modifier = Modifier
+                                            .weight(0.5f)
+                                            .wrapContentWidth()
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            onGoToNega(
+                                                matchSummaryUiState.matchType,
+                                                negaInfo.id
+                                            )
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
                                 }
+                                Divider()
                             }
-                            Divider()
                         }
                     }
                 }

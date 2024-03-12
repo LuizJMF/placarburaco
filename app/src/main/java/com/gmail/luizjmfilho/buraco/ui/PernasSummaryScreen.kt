@@ -262,41 +262,56 @@ fun PernasSummaryScreenSecundaria(
                         Spacer(modifier = Modifier.width(48.dp))
                     }
                     Divider()
-                    if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
-                        pernasSummaryUiState.pernaInfoList.forEachIndexed { index, pernaInfo ->
-                            Row(
-                                modifier = Modifier
-                                    .height(48.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = (index + 1).toString(),
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
+                            pernasSummaryUiState.pernaInfoList.forEachIndexed { index, pernaInfo ->
+                                Row(
                                     modifier = Modifier
-                                        .weight(0.12f)
-                                        .wrapContentWidth()
-                                )
-                                Icon(
-                                    imageVector = if (pernaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .weight(0.18f)
-                                        .wrapContentWidth(),
-                                    tint = if (pernaInfo.status == MatchStatus.Finished) Color(0xFF4CAF50) else Color(0xFFFFC107),
-                                )
-                                Text(
-                                    text = pernaInfo.winner ?: "-",
-                                    modifier = Modifier
-                                        .weight(0.5f)
-                                        .wrapContentWidth(),
-                                    textAlign = TextAlign.Center
-                                )
-                                IconButton(
-                                    onClick = { onGoToPerna(pernasSummaryUiState.matchType, pernaInfo.id) }
+                                        .height(48.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(imageVector = Icons.Filled.ArrowRight, contentDescription = null)
+                                    Text(
+                                        text = (index + 1).toString(),
+                                        modifier = Modifier
+                                            .weight(0.12f)
+                                            .wrapContentWidth()
+                                    )
+                                    Icon(
+                                        imageVector = if (pernaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .weight(0.18f)
+                                            .wrapContentWidth(),
+                                        tint = if (pernaInfo.status == MatchStatus.Finished) Color(
+                                            0xFF4CAF50
+                                        ) else Color(0xFFFFC107),
+                                    )
+                                    Text(
+                                        text = pernaInfo.winner ?: "-",
+                                        modifier = Modifier
+                                            .weight(0.5f)
+                                            .wrapContentWidth(),
+                                        textAlign = TextAlign.Center
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            onGoToPerna(
+                                                pernasSummaryUiState.matchType,
+                                                pernaInfo.id
+                                            )
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.ArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
                                 }
+                                Divider()
                             }
-                            Divider()
                         }
                     }
                 }
