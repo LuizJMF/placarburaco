@@ -1,5 +1,7 @@
 package com.gmail.luizjmfilho.buraco.ui
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +19,7 @@ import javax.inject.Inject
 class MatchSummaryViewModel @Inject constructor(
     private val matchSummaryRepository: MatchSummaryRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
 
     private val groupInfo = savedStateHandle.get<String>("groupInfo")!!.split(",")
     private val matchType = MatchType.valueOf(groupInfo[0])
@@ -25,6 +27,11 @@ class MatchSummaryViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(MatchSummaryUiState())
     val uiState = _uiState.asStateFlow()
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        refreshNegaSummary(matchType, groupId)
+    }
 
     init {
         viewModelScope.launch {
@@ -49,7 +56,6 @@ class MatchSummaryViewModel @Inject constructor(
                     playerNames = playerNames
                 )
             }
-            refreshNegaSummary(matchType, groupId)
 
         }
     }

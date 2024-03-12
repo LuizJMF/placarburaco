@@ -1,5 +1,7 @@
 package com.gmail.luizjmfilho.buraco.ui
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +19,7 @@ import javax.inject.Inject
 class PernasSummaryViewModel @Inject constructor(
     private val pernasSummaryRepository: PernasSummaryRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
 
     private val negaInfo = savedStateHandle.get<String>("negaInfo")!!.split(",")
     private val matchType = MatchType.valueOf(negaInfo[0])
@@ -25,6 +27,11 @@ class PernasSummaryViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(PernasSummaryUiState())
     val uiState = _uiState.asStateFlow()
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        refreshPernaSummary(matchType, negaId)
+    }
 
     init {
         viewModelScope.launch {
@@ -53,8 +60,6 @@ class PernasSummaryViewModel @Inject constructor(
                     playerNames = playerNames
                 )
             }
-
-            refreshPernaSummary(matchType, negaId)
 
         }
     }

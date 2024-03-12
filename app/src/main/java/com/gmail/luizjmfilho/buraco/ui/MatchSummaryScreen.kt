@@ -47,6 +47,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +61,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +81,13 @@ fun MatchSummaryScreenPrimaria(
     matchSummaryViewModel: MatchSummaryViewModel = hiltViewModel(),
 ) {
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(key1 = Unit) {
+        lifecycleOwner.lifecycle.addObserver(matchSummaryViewModel)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(matchSummaryViewModel)
+        }
+    }
     val matchSummaryUiState by matchSummaryViewModel.uiState.collectAsState()
 
     MatchSummaryScreenSecundaria(

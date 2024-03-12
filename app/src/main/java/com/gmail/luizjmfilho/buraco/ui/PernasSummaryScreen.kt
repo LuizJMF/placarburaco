@@ -40,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +69,13 @@ fun PernasSummaryScreenPrimaria(
     onGoToPerna: (MatchType, Int) -> Unit,
     pernasSummaryViewModel: PernasSummaryViewModel = hiltViewModel(),
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(key1 = Unit) {
+        lifecycleOwner.lifecycle.addObserver(pernasSummaryViewModel)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(pernasSummaryViewModel)
+        }
+    }
 
     val pernasSummaryUiState by pernasSummaryViewModel.uiState.collectAsState()
 
