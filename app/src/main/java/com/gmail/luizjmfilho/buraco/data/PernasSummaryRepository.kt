@@ -105,5 +105,13 @@ class PernasSummaryRepository @Inject constructor(
         doubleMaoHistoryDao.addDoubleMao(newMao)
     }
 
+    suspend fun isP2AfterP1FromNegaId(singleNegaId: Int): Boolean {
+        return singleNegaHistoryDao.isP2AfterP1FromNegaId(singleNegaId)
+    }
+
+    suspend fun isP3AfterP1FromNegaId(singleNegaId: Int): Boolean {
+        return doubleNegaHistoryDao.isP3AfterP1FromNegaId(singleNegaId)
+    }
+
 
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Equalizer
+import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
@@ -50,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -84,6 +88,8 @@ fun PernasSummaryScreenPrimaria(
         onBackClick = onBackClick,
         onCreatePerna = pernasSummaryViewModel::onCreatePerna,
         onGoToPerna = onGoToPerna,
+        onAlternateVisualizationToInfoList = pernasSummaryViewModel::onAlternateVisualizationToInfoList,
+        onAlternateVisualizationToStatistics = pernasSummaryViewModel::onAlternateVisualizationToStatistics,
         modifier = modifier,
     )
 }
@@ -93,14 +99,16 @@ fun PernasSummaryScreenSecundaria(
     pernasSummaryUiState: PernasSummaryUiState,
     onCreatePerna: (String) -> Unit,
     onBackClick: () -> Unit,
+    onAlternateVisualizationToStatistics: () -> Unit,
+    onAlternateVisualizationToInfoList: () -> Unit,
     onGoToPerna: (MatchType, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     var isDialogShown by rememberSaveable { mutableStateOf(false) }
     val isFabEnabled = when(pernasSummaryUiState.matchType) {
-        MatchType.Singles -> (pernasSummaryUiState.pernaInfoList.size < 4)
-        MatchType.Doubles -> (pernasSummaryUiState.pernaInfoList.size < 3)
+        MatchType.Singles -> ((pernasSummaryUiState.pernaInfoList.size < 4) && (pernasSummaryUiState.visualizationMode == VisualizationMode.InfoList))
+        MatchType.Doubles -> ((pernasSummaryUiState.pernaInfoList.size < 3) && (pernasSummaryUiState.visualizationMode == VisualizationMode.InfoList))
 
     }
 
@@ -132,6 +140,31 @@ fun PernasSummaryScreenSecundaria(
                         .padding(bottom = 5.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = onAlternateVisualizationToInfoList
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.FormatListNumbered,
+                            contentDescription = null,
+                            modifier = when (pernasSummaryUiState.visualizationMode) {
+                                VisualizationMode.InfoList -> {
+                                    Modifier.size(35.dp)
+                                }
+                                VisualizationMode.Statistics -> {
+                                    Modifier.size(25.dp)
+                                }
+                            },
+                            tint = when (pernasSummaryUiState.visualizationMode) {
+                                VisualizationMode.InfoList -> {
+                                    Color(0xFF1B6F1E)
+                                }
+                                VisualizationMode.Statistics -> {
+                                    Color(0xFF5E5E5E)
+                                }
+                            },
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
                     FloatingActionButton(
                         onClick = {
                             if (isFabEnabled) {
@@ -145,6 +178,31 @@ fun PernasSummaryScreenSecundaria(
                             imageVector = Icons.Filled.Add,
                             contentDescription = null
                         )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = onAlternateVisualizationToStatistics
+                    ) {
+                       Icon(
+                           imageVector = Icons.Outlined.Equalizer,
+                           contentDescription = null,
+                           modifier = when (pernasSummaryUiState.visualizationMode) {
+                               VisualizationMode.Statistics -> {
+                                   Modifier.size(35.dp)
+                               }
+                               VisualizationMode.InfoList -> {
+                                   Modifier.size(25.dp)
+                               }
+                           },
+                           tint = when (pernasSummaryUiState.visualizationMode) {
+                               VisualizationMode.Statistics -> {
+                                   Color(0xFF1B6F1E)
+                               }
+                               VisualizationMode.InfoList -> {
+                                   Color(0xFF5E5E5E)
+                               }
+                           },
+                       )
                     }
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -238,88 +296,119 @@ fun PernasSummaryScreenSecundaria(
                         }
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp, top = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    Row {
-                        Text(
-                            text = stringResource(R.string.perna),
+                when (pernasSummaryUiState.visualizationMode) {
+                    VisualizationMode.InfoList -> {
+                        Column(
                             modifier = Modifier
-                                .weight(0.12f)
-                                .wrapContentWidth(),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = stringResource(R.string.status),
-                            modifier = Modifier
-                                .weight(0.18f)
-                                .wrapContentWidth(),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = pluralStringResource(
-                                id = R.plurals.winner,
-                                count = if (pernasSummaryUiState.matchType == MatchType.Singles) 1 else 2
-                            ),
-                            modifier = Modifier
-                                .weight(0.5f)
-                                .wrapContentWidth(),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.width(48.dp))
-                    }
-                    Divider()
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
-                            pernasSummaryUiState.pernaInfoList.forEachIndexed { index, pernaInfo ->
-                                Row(
+                                .padding(start = 10.dp, end = 10.dp, top = 20.dp),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                        ) {
+                            Row {
+                                Text(
+                                    text = stringResource(R.string.perna),
                                     modifier = Modifier
-                                        .height(48.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = (index + 1).toString(),
-                                        modifier = Modifier
-                                            .weight(0.12f)
-                                            .wrapContentWidth()
-                                    )
-                                    Icon(
-                                        imageVector = if (pernaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .weight(0.18f)
-                                            .wrapContentWidth(),
-                                        tint = if (pernaInfo.status == MatchStatus.Finished) Color(
-                                            0xFF4CAF50
-                                        ) else Color(0xFFFFC107),
-                                    )
-                                    Text(
-                                        text = pernaInfo.winner ?: "-",
-                                        modifier = Modifier
-                                            .weight(0.5f)
-                                            .wrapContentWidth(),
-                                        textAlign = TextAlign.Center
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            onGoToPerna(
-                                                pernasSummaryUiState.matchType,
-                                                pernaInfo.id
+                                        .weight(0.12f)
+                                        .wrapContentWidth(),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = stringResource(R.string.status),
+                                    modifier = Modifier
+                                        .weight(0.18f)
+                                        .wrapContentWidth(),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = pluralStringResource(
+                                        id = R.plurals.winner,
+                                        count = if (pernasSummaryUiState.matchType == MatchType.Singles) 1 else 2
+                                    ),
+                                    modifier = Modifier
+                                        .weight(0.5f)
+                                        .wrapContentWidth(),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.width(48.dp))
+                            }
+                            Divider()
+                            Column(
+                                modifier = Modifier
+                                    .verticalScroll(rememberScrollState())
+                            ) {
+                                if (pernasSummaryUiState.pernaInfoList.isNotEmpty()) {
+                                    pernasSummaryUiState.pernaInfoList.forEachIndexed { index, pernaInfo ->
+                                        Row(
+                                            modifier = Modifier
+                                                .height(48.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = (index + 1).toString(),
+                                                modifier = Modifier
+                                                    .weight(0.12f)
+                                                    .wrapContentWidth()
                                             )
+                                            Icon(
+                                                imageVector = if (pernaInfo.status == MatchStatus.Finished) Icons.Filled.Done else Icons.Filled.AccessTime,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .weight(0.18f)
+                                                    .wrapContentWidth(),
+                                                tint = if (pernaInfo.status == MatchStatus.Finished) Color(
+                                                    0xFF4CAF50
+                                                ) else Color(0xFFFFC107),
+                                            )
+                                            Text(
+                                                text = pernaInfo.winner ?: "-",
+                                                modifier = Modifier
+                                                    .weight(0.5f)
+                                                    .wrapContentWidth(),
+                                                textAlign = TextAlign.Center
+                                            )
+                                            IconButton(
+                                                onClick = {
+                                                    onGoToPerna(
+                                                        pernasSummaryUiState.matchType,
+                                                        pernaInfo.id
+                                                    )
+                                                }
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.ArrowRight,
+                                                    contentDescription = null
+                                                )
+                                            }
                                         }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Filled.ArrowRight,
-                                            contentDescription = null
+                                        Divider()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    VisualizationMode.Statistics -> {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 10.dp, end = 10.dp, top = 20.dp),
+                        ) {
+                            Row {
+                                Text(
+                                    text = stringResource(R.string.order_of_players),
+                                    modifier = Modifier
+                                        .padding(end = 10.dp),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                when (pernasSummaryUiState.matchType) {
+                                    MatchType.Singles -> {
+                                        Text(
+                                            text = "${pernasSummaryUiState.playersOrder[0]} marca ${pernasSummaryUiState.playersOrder[1]}",
+                                        )
+                                    }
+                                    MatchType.Doubles -> {
+                                        Text(
+                                            text = "${pernasSummaryUiState.playersOrder[0]} marca ${pernasSummaryUiState.playersOrder[1]}",
                                         )
                                     }
                                 }
-                                Divider()
                             }
                         }
                     }
@@ -438,11 +527,13 @@ fun PernasSummaryScreenPreview() {
                     PernaInfo(1, 1, MatchStatus.Finished, "Zinho / Gian"),
                     PernaInfo(2, 2, MatchStatus.Finished, "Painho / Mainha"),
                     PernaInfo(3, 3, MatchStatus.Underway, null),
-                )
+                ),
             ),
             onBackClick = {},
             onCreatePerna = {},
-            onGoToPerna = {_, _ ->}
+            onGoToPerna = {_, _ ->},
+            onAlternateVisualizationToInfoList = {},
+            onAlternateVisualizationToStatistics = {}
         )
     }
 }

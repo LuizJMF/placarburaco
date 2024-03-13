@@ -24,6 +24,7 @@
     <string name="delete_last_mao">Deletar a última mão</string>
     <string name="winner_by_wo">Vitória por WO</string>
     <string name="wo">WO</string>
+    <string name="order_of_players">Ordem à mesa:</string>
     <plurals name="winner">
         <item quantity="one">Vencedor(a)</item>
         <item quantity="other">Vencedores(as)</item>

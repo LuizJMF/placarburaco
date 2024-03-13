@@ -5,6 +5,8 @@ data class PernasSummaryUiState(
     val negaNum: Int = 0,
     val playerNames: List<String> = emptyList(),
     val pernaInfoList: List<PernaInfo> = emptyList(),
+    val visualizationMode: VisualizationMode = VisualizationMode.InfoList,
+    val playersOrder: List<String> = listOf()
 )
 
 data class PernaInfo(
@@ -13,3 +15,8 @@ data class PernaInfo(
     val status: MatchStatus,
     val winner: String?,
 )
+
+enum class VisualizationMode {
+    Statistics,
+    InfoList,
+}

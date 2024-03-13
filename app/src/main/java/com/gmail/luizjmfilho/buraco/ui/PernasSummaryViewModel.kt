@@ -1,5 +1,6 @@
 package com.gmail.luizjmfilho.buraco.ui
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
@@ -37,12 +38,23 @@ class PernasSummaryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { currentState ->
                 val playerNames = mutableListOf<String>()
+                val playersOrder = mutableListOf<String>()
                 when (matchType) {
                     MatchType.Singles -> {
                         val group = pernasSummaryRepository.getTheSingleGroupWhoseIdIs(pernasSummaryRepository.getSingleGroupIdFromNegaId(negaId))
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player1id))
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
+
+                        if (pernasSummaryRepository.isP2AfterP1FromNegaId(negaId)) {
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player1id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
+                        } else {
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player1id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
+                        }
                     }
                     MatchType.Doubles -> {
                         val group = pernasSummaryRepository.getTheDoubleGroupWhoseIdIs(pernasSummaryRepository.getDoubleGroupIdFromNegaId(negaId))
@@ -50,14 +62,30 @@ class PernasSummaryViewModel @Inject constructor(
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
                         playerNames.add(pernasSummaryRepository.getPlayerNameFromId(group.player4id))
+
+                        if (pernasSummaryRepository.isP3AfterP1FromNegaId(negaId)) {
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player1id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player4id))
+                        } else {
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player1id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player4id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player2id))
+                            playersOrder.add(pernasSummaryRepository.getPlayerNameFromId(group.player3id))
+                        }
                     }
                 }
+
+
+
                 currentState.copy(
                     negaNum = when(matchType) {
                         MatchType.Singles -> pernasSummaryRepository.getSingleNegaNumberFromId(negaId)
                         MatchType.Doubles -> pernasSummaryRepository.getDoubleNegaNumberFromId(negaId)
                     },
-                    playerNames = playerNames
+                    playerNames = playerNames,
+                    playersOrder = playersOrder
                 )
             }
 
@@ -159,6 +187,22 @@ class PernasSummaryViewModel @Inject constructor(
                 MatchType.Doubles -> pernasSummaryRepository.addDoublePerna(firstPlayerToPlay, negaId, dateAndTime)
             }
             refreshPernaSummary(matchType, negaId)
+        }
+    }
+
+    fun onAlternateVisualizationToInfoList() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                visualizationMode = VisualizationMode.InfoList
+            )
+        }
+    }
+
+    fun onAlternateVisualizationToStatistics() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                visualizationMode = VisualizationMode.Statistics
+            )
         }
     }
 
