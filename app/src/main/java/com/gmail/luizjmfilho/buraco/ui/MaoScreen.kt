@@ -500,7 +500,7 @@ fun MaoScreenSecundaria(
                                     totalPoints = maoUiState.totalPoints.pts2,
                                     color = darkMainColor,
                                     onClickScore = { maoNumber ->
-                                        playerInTypeScoreDialog = "${maoUiState.playerNames[1]} / ${maoUiState.playerNames[2]}"
+                                        playerInTypeScoreDialog = "${maoUiState.playerNames[2]} / ${maoUiState.playerNames[3]}"
                                         playerOrNumberTeam = 1
                                         maoNumberBeingTyped = maoNumber
                                         isTypeScoreDialogShown = true
