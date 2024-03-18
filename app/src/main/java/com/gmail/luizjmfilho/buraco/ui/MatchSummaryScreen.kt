@@ -409,8 +409,8 @@ fun NewNegaDialog(
                         )
                         Text(
                             text = when (matchType) {
-                                MatchType.Singles -> "${playerNames[0]} marca ${playerNames[i]}"
-                                MatchType.Doubles -> "${playerNames[0]} marca ${playerNames[i + 1]}"
+                                MatchType.Singles -> stringResource(R.string.player_comes_before_player, playerNames[0], playerNames[i])
+                                MatchType.Doubles -> stringResource(R.string.player_comes_before_player, playerNames[0], playerNames[i + 1])
                             }
                         )
                     }

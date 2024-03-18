@@ -129,8 +129,8 @@ fun PlayersListScreenSecundaria(
                     isError = (playersListUiState.nameError != null),
                     supportingText = {
                         when (playersListUiState.nameError) {
-                            NameError.Empty -> Text(text = "Nome vazio")
-                            NameError.Exists -> Text(text = "Esse nome já existe")
+                            NameError.Empty -> Text(text = stringResource(R.string.empty_name))
+                            NameError.Exists -> Text(text = stringResource(R.string.this_name_already_exists))
                             else -> {}
                         }
                     }

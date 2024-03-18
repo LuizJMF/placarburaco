@@ -237,7 +237,7 @@ fun DoubleChoosePlayerCard(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
         ) {
-            Text(text = "Time $teamNumber")
+            Text(text = stringResource(R.string.team_number, teamNumber))
             Icon(
                 imageVector = Icons.Filled.ArrowRightAlt,
                 contentDescription = null,
@@ -298,7 +298,7 @@ fun SingleChoosePlayerCard(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
         ) {
-            Text(text = "Jogador $playerNumber")
+            Text(text = stringResource(R.string.player_number, playerNumber))
             Icon(
                 imageVector = Icons.Filled.ArrowRightAlt,
                 contentDescription = null,

@@ -117,7 +117,7 @@ fun PernasSummaryScreenSecundaria(
         topBar = {
             DefaultTopBar(
                 onBackClick = onBackClick,
-                title = "Nega ${pernasSummaryUiState.negaNum}",
+                title = stringResource(R.string.nega_number, pernasSummaryUiState.negaNum),
                 icon = when(pernasSummaryUiState.matchType) {
                     MatchType.Singles -> Icons.Filled.Person
                     MatchType.Doubles -> Icons.Filled.People
@@ -400,12 +400,12 @@ fun PernasSummaryScreenSecundaria(
                                 when (pernasSummaryUiState.matchType) {
                                     MatchType.Singles -> {
                                         Text(
-                                            text = "${pernasSummaryUiState.playersOrder[0]} marca ${pernasSummaryUiState.playersOrder[1]}",
+                                            text = stringResource(id = R.string.player_comes_before_player, pernasSummaryUiState.playersOrder[0], pernasSummaryUiState.playersOrder[1]),
                                         )
                                     }
                                     MatchType.Doubles -> {
                                         Text(
-                                            text = "${pernasSummaryUiState.playersOrder[0]} marca ${pernasSummaryUiState.playersOrder[1]}",
+                                            text = stringResource(id = R.string.player_comes_before_player, pernasSummaryUiState.playersOrder[0], pernasSummaryUiState.playersOrder[1]),
                                         )
                                     }
                                 }

@@ -133,7 +133,7 @@ fun MaoScreenSecundaria(
         topBar = {
             DefaultTopBar(
                 onBackClick = onBackClick,
-                title = "Perna ${maoUiState.pernaNum}",
+                title = stringResource(R.string.perna_number, maoUiState.pernaNum),
                 icon = when(maoUiState.matchType) {
                     MatchType.Singles -> Icons.Filled.Person
                     MatchType.Doubles -> Icons.Filled.People
@@ -671,8 +671,8 @@ fun WinnerByWoDialog(
             ) {
                 Text(
                     text = when(matchType) {
-                        MatchType.Singles -> "Qual jogador venceu por W0?"
-                        MatchType.Doubles -> "Qual dupla venceu por WO?"
+                        MatchType.Singles -> stringResource(R.string.which_player_wins_by_WO)
+                        MatchType.Doubles -> stringResource(R.string.which_duo_wins_by_wo)
                     },
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF021CC5),
@@ -785,7 +785,7 @@ fun TypeScoreDialog(
                 value = value,
                 onValueChange = onValueChange,
                 label = { Text(
-                    text = "Pontuação de $playerName",
+                    text = stringResource(R.string.score_of_players, playerName),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
