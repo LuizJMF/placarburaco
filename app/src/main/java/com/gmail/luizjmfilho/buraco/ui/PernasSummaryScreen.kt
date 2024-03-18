@@ -23,11 +23,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Equalizer
-import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
@@ -53,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -117,7 +114,7 @@ fun PernasSummaryScreenSecundaria(
         topBar = {
             DefaultTopBar(
                 onBackClick = onBackClick,
-                title = stringResource(R.string.nega_number, pernasSummaryUiState.negaNum),
+                title = stringResource(R.string.match_number, pernasSummaryUiState.negaNum),
                 icon = when(pernasSummaryUiState.matchType) {
                     MatchType.Singles -> Icons.Filled.Person
                     MatchType.Doubles -> Icons.Filled.People
@@ -303,20 +300,26 @@ fun PernasSummaryScreenSecundaria(
                                 .padding(start = 10.dp, end = 10.dp, top = 20.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
-                            Row {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
                                     text = stringResource(R.string.perna),
                                     modifier = Modifier
                                         .weight(0.12f)
                                         .wrapContentWidth(),
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
                                 Text(
                                     text = stringResource(R.string.status),
                                     modifier = Modifier
                                         .weight(0.18f)
                                         .wrapContentWidth(),
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
                                 Text(
                                     text = pluralStringResource(
@@ -326,7 +329,9 @@ fun PernasSummaryScreenSecundaria(
                                     modifier = Modifier
                                         .weight(0.5f)
                                         .wrapContentWidth(),
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
                                 Spacer(modifier = Modifier.width(48.dp))
                             }
