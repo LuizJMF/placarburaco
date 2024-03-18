@@ -35,6 +35,8 @@
     <string name="match_number">Partida %d</string>
     <string name="empty_name">Nome vazio</string>
     <string name="this_name_already_exists">Esse nome já existe</string>
+    <string name="export_data">Exportar dados</string>
+    <string name="import_data">Importar dados</string>
     <plurals name="winner">
         <item quantity="one">Vencedor(a)</item>
         <item quantity="other">Vencedores(as)</item>

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,9 +27,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,11 +40,14 @@ import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -111,19 +118,53 @@ fun MatchesListScreenSecundaria(
 ) {
     var isDoubleMatchesShown by rememberSaveable { mutableStateOf(true) }
     var isSingleMatchesShown by rememberSaveable { mutableStateOf(true) }
+    var isSettingsDialogShown by rememberSaveable { mutableStateOf(false) }
+    val degree by animateFloatAsState(
+        targetValue = if (isSettingsDialogShown) 0f else 180f,
+    )
+
 
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onCreateNewMatch,
-                containerColor = Color(0xFF021CC5),
-                contentColor = Color.White
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = null
-                )
+                SmallFloatingActionButton(
+                    onClick = {
+                        isSettingsDialogShown = true
+                    },
+                    containerColor = Color(0xFF6C7294),
+                    contentColor = Color.White
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .rotate(degree)
+                    )
+                    AnimatedVisibility(
+                        visible = isSettingsDialogShown
+                    ) {
+                        DropDownGeneralSettingsMenu(
+                            isDropMenuExpanded = isSettingsDialogShown,
+                            onDismissRequest = { isSettingsDialogShown = false },
+                            onImportData = { /*TODO*/ },
+                            onExportData = { /*TODO*/ },
+                        )
+                    }
+                }
+                FloatingActionButton(
+                    onClick = onCreateNewMatch,
+                    containerColor = Color(0xFF021CC5),
+                    contentColor = Color.White
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null
+                    )
+                }
             }
         },
     ) { scaffoldPaddings ->
@@ -505,6 +546,52 @@ fun DeleteBackground(
         contentAlignment = Alignment.CenterEnd
     ) {
         Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = Color.White)
+    }
+}
+
+@Composable
+fun DropDownGeneralSettingsMenu(
+    isDropMenuExpanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onImportData: () -> Unit,
+    onExportData: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    DropdownMenu(
+        expanded = isDropMenuExpanded,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
+    ) {
+        DropdownMenuItem(
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Upload,
+                        contentDescription = null
+                    )
+                    Text(text = stringResource(R.string.export_data))
+                }
+            },
+            onClick = onExportData,
+        )
+        DropdownMenuItem(
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Download,
+                        contentDescription = null
+                    )
+                    Text(text = stringResource(R.string.import_data))
+                }
+            },
+            onClick = onImportData
+        )
     }
 }
 
