@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Buraco - Marcador de Puntos</string>
+    <string name="doubles">Parejas</string>
+    <string name="singles">Individual</string>
+    <string name="versus_acronym">vs</string>
+    <string name="cancel">Cancelar</string>
+    <string name="add_a_player">Añadir un jugador</string>
+    <string name="new_player">Nuevo jugador</string>
+    <string name="add">Añadir</string>
+    <string name="choose">Elija</string>
+    <string name="create_match">Crear grupo</string>
+    <string name="match_already_exists">Ya hay un grupo creado con estos jugadores</string>
+    <string name="confirm">Confirme</string>
+    <string name="delete_match_warning">¿Está seguro de que desea eliminar esta partida? Se perderán todos los datos relacionados con ella.</string>
+    <string name="partida">Partido</string>
+    <string name="status">Status</string>
+    <string name="new_match">Nuevo partido</string>
+    <string name="to_select_players_sequence">Selecciona el orden de los jugadores en la mesa:</string>
+    <string name="which_player_starts">¿Qué jugador empieza la primera ronda?</string>
+    <string name="match_summary_title">Resumen del partido</string>
+    <string name="perna">Pierna</string>
+    <string name="pernas_summary_title">Resumen de la pierna</string>
+    <string name="new_perna">Nueva pierna</string>
+    <string name="delete_last_mao">Borrar la última ronda</string>
+    <string name="winner_by_wo">Victoria por wo</string>
+    <string name="wo">WO</string>
+    <string name="order_of_players">Orden en la mesa:</string>
+    <string name="perna_number">Pierna %d</string>
+    <string name="which_player_wins_by_WO">¿Qué jugador ganó por W0?</string>
+    <string name="which_duo_wins_by_wo">¿Qué pareja ganó por WO?</string>
+    <string name="score_of_players">Pontuación de %1$s</string>
+    <string name="player_comes_before_player">%1$s juega antes que %2$s</string>
+    <string name="team_number">Equipo %d</string>
+    <string name="player_number">Jugador %d</string>
+    <string name="match_number">Partido %d</string>
+    <string name="empty_name">Nombre vacío</string>
+    <string name="this_name_already_exists">Este nombre ya existe</string>
+    <string name="export_data">Exportar datos</string>
+    <string name="import_data">Importar datos</string>
+    <plurals name="winner">
+        <item quantity="one">Ganador</item>
+        <item quantity="other">Ganadores</item>
+        <item quantity="many">Ganadores</item>
+    </plurals>
+</resources>
